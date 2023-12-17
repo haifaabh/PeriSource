@@ -10,6 +10,8 @@ function App() {
           <li className="px-5 font-bold text-[#797bd1]"><Link to={"/home"}>Link to Home Page</Link></li>
           <li className="px-5 font-bold text-[#797bd1]"><Link to={"/moderator"}>Link to Moderator Page</Link></li>
           <li className="px-5 font-bold text-[#797bd1]"><Link to={"/auth"}>Link to Authentification Page</Link></li>
+          <li className="px-5 font-bold text-[#797bd1]"><Link to={"/signin"}>Link to SignIn Page</Link></li>
+          <li className="px-5 font-bold text-[#797bd1]"><Link to={"/signup"}>Link to SignUp Page</Link></li>
       </ul>
     </div>
   );

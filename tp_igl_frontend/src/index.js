@@ -11,6 +11,8 @@ import { AdminPage } from './pages/AdminPage';
 import { AuthPage } from './pages/AuthPage';
 import { ModeratorPage } from './pages/ModeratorPage';
 import { HomePage } from './pages/HomePage';
+import SignIn from './pages/SignIn';
+import SignUp from './pages/SignUp';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +38,14 @@ const router = createBrowserRouter([
   {
     path: "moderator",
     element: <ModeratorPage/>,
+  },
+  {
+    path: "signin",
+    element: <SignIn/>,
+  },
+  {
+    path: "signup",
+    element: <SignUp/>,
   },
 ]);
 
