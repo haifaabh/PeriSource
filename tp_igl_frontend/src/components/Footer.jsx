@@ -18,7 +18,7 @@ const Footer=()=>{
         Contact Us 
     </div>
     <div className="w-full sm:w-1/2 md:w-1/4 xl:w-1/6 p-8 text-[#002366] font-montserrat font-bold lg:text-2xl">
-        Contact Us 
+        Follow Us 
     </div>
   </div>
 

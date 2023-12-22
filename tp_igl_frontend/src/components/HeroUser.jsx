@@ -1,11 +1,21 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import searchIcon from '../assets/Search.svg';
 import filterIcon from '../assets/Filter.svg';
 import UserPageM from '../assets/UserPageM.svg';
 import UserPageW from '../assets/UserPageW.svg';
+import { View, TouchableOpacity, Text } from 'react';
+import { FilterPage } from '../pages/FilterPage';
+import { useState } from 'react'; 
+
 
 export const HeroUser = () => {
+  console.log('Heroo Rendered');
+
+
+   const [isFilterVisible, setFilterVisible] = useState(false);
+  
   return (
+    <Fragment>
     <div className='bg-white borderTopUser borderBottomUser w-screen relative'>
       {/* Left Image */}
       <div
@@ -29,7 +39,7 @@ export const HeroUser = () => {
             </p>
           </div>
           <div>
-            <p className='max-w-[650px] text-[16px] font-bold text-gray-500'> a dedicated platform designed to streamline your search for high-quality scientific articles, ensuring a comprehensive and efficient exploration of the latest advancements in your field.</p>
+            <p className='max-w-[650px] md:text-[16px] text-[12px] font-bold text-gray-500'> a dedicated platform designed to streamline your search for high-quality scientific articles, ensuring a comprehensive and efficient exploration of the latest advancements in your field.</p>
           </div>
         </div>
         <div className='flex col-span-2 items-center justify-center'>
@@ -48,12 +58,11 @@ export const HeroUser = () => {
             </button>
           </div>
           <div className="mb-4 flex items-center justify-center px-4">
-            <button className="bg-[#002366] text-white p-2 px-4 font-montserrat font-bold flex items-center" style={{ borderRadius: '16px', marginTop: '0' }}>
+            <button className="bg-[#002366] text-white p-2 px-4 font-montserrat font-bold flex items-center" style={{ borderRadius: '16px', marginTop: '0' }} onClick={() => setFilterVisible(true)}>
               <img src={filterIcon} alt="" className="w-[25px] h-[25px] mr-2" />
               Filter
             </button>
           </div>
-
         </div>
       </div>
       {/* Right Image */}
@@ -65,5 +74,7 @@ export const HeroUser = () => {
             }}
           />
     </div>
+    <FilterPage isVisible={isFilterVisible} onClose={()=>setFilterVisible(false)} />
+    </Fragment>
   );
 }

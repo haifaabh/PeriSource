@@ -4,7 +4,7 @@ import favoritIcon from '../assets/favoritIcon.svg'
 
 export const ArticleScientifique = ({ title, content, readMoreLink, pdfLink, onAddToFavorites }) => {
   return (
-    <div className="lg:max-w-[450px] md:max-w-[300px] sm:max-w-[300px] mx-auto bg-white p-4 shadow-md rounded-md mb-4">
+    <div className="lg:max-w-[450px] md:max-w-[300px] md:mx-auto mx-[45px] bg-white p-4 shadow-md rounded-md mb-4">
       {/* Title */}
       <h2 className="text-xl font-bold text-[#002366] mb-2 font-roboto ">{title}</h2>
 

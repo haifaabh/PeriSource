@@ -69,7 +69,7 @@ export const RecentsUser = () => {
       <h1 className="md:text-4xl sm:text-3xl text-2xl font-bold ml-[8%] mt-6 mb-16 font-montserrat text-[#002366]">
         Recents
       </h1>
-      <div className=" slider-container" style={{ position: 'relative', zIndex: 1 }}>
+      <div className=" slider-container" style={{ position: 'relative'}}>
         <Slider {...sliderSettings}>
           {articles.map((article, index) => (
             <div key={index}>
