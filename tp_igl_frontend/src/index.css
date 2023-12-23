@@ -1,6 +1,76 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap"); 
+@import url("https://fonts.googleapis.com/css2?family=Rammetto+One&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+
+body {
+    background-color: #f0f7ff;
+}
+
+
+.borderTopUser {
+    border-top: .5px solid rgba(171, 190, 209, 0.5);
+}
+
+.borderbottomUser {
+  border-bottom: .5px solid rgba(171, 190, 209, 0.8);
+  box-shadow: 0px 2px 4px rgba(171, 190, 209, 0.8);
+}
+
+.slider-container .slick-dots {
+    position: absolute;
+    bottom: 10px; 
+    left: 50%;
+    margin-top: 10px;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+
+  .react-datepicker__input-container input {
+    border: 1px solid rgba(171, 190, 209, 0.8);
+    border-radius: 30px;
+    padding: 8px;
+    padding-left: 15px;
+  }
+  .react-datepicker-popper {
+    z-index: 1; 
+  }
+  
+
+  .slider-container {
+    max-width: 100%; 
+    margin: 0 auto; 
+  }
+
+  .slider-container .slick-prev,
+.slider-container .slick-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  color: white; 
+  border-radius: 50%; 
+}
+
+
+.slider-container .slick-prev::before,
+.slider-container .slick-next::before {
+  color: #002366;
+}
+
+.slider-container .slick-prev:hover::before,
+.slider-container .slick-next:hover::before {
+  color: rgb(172, 172, 213)2366; 
+}
+.slider-container .slick-prev {
+  left: 20px; 
+}
+.slider-container .slick-next {
+  right: 20px; 
+}
+
 
 
 
