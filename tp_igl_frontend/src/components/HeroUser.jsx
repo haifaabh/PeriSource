@@ -47,7 +47,7 @@ export const HeroUser = () => {
             <input
               type="text"
               placeholder="Search..."
-              className="border p-2 pl-8 border-solid bg-white border-gray-400 bg-white lg:w-[450px]"
+              className="border p-2 pl-8 border-solid bg-white border-gray-400 lg:w-[450px]"
               style={{
                 border: '1px solid rgba(171, 190, 209, 0.40)',
                 borderRadius: '16px 0 0 16px',

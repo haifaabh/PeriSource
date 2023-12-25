@@ -65,9 +65,9 @@ export const RecentsUser = () => {
   };
 
   return (
-    <div className="bg-white borderTopUser w-screen pb-20">
+    <div id="Recents" className="bg-white borderTopUser w-screen pb-20">
       <h1 className="md:text-4xl sm:text-3xl text-2xl font-bold ml-[8%] mt-6 mb-16 font-montserrat text-[#002366]">
-        Recents
+      <span style={{ borderBottom: '2px solid #002366' }}>Recen</span>ts
       </h1>
       <div className=" slider-container" style={{ position: 'relative'}}>
         <Slider {...sliderSettings}>
@@ -79,6 +79,7 @@ export const RecentsUser = () => {
                 readMoreLink={article.readMoreLink}
                 pdfLink={article.pdfLink}
                 onAddToFavorites={() => handleAddToFavorites(index)}
+                isFavoritesPage={false}
               />
             </div>
           ))}

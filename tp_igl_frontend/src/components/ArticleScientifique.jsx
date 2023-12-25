@@ -1,12 +1,31 @@
 import React from 'react';
 import favoritIcon from '../assets/favoritIcon.svg'
+import favoritAddedIcon from '../assets/favoritAddedIcon.svg'
+import { useState } from 'react';
+import heartIcon from '../assets/heartIcon.svg'
+import { ReadMorePage } from '../pages/ReadMorePage';
 
 
-export const ArticleScientifique = ({ title, content, readMoreLink, pdfLink, onAddToFavorites }) => {
+
+
+export const ArticleScientifique = ({ title, content, readMoreLink, pdfLink, onAddToFavorites, isFavoritesPage }) => {
+
+  const [isFavorite, setIsFavorite] = useState(isFavoritesPage);
+
+  const handleAddToFavorites = () => {
+    onAddToFavorites();
+    setIsFavorite(!isFavorite);
+  };
+
   return (
     <div className="lg:max-w-[450px] md:max-w-[300px] md:mx-auto mx-[45px] bg-white p-4 shadow-md rounded-md mb-4">
       {/* Title */}
-      <h2 className="text-xl font-bold text-[#002366] mb-2 font-roboto ">{title}</h2>
+      <div className='flex'>
+        <h2 className="text-xl font-bold text-[#002366] mb-2 font-roboto">{title}</h2>
+        {isFavoritesPage && <img src={heartIcon} alt="" className="w-6 ml-2 h-6 " />}
+      </div>
+
+
 
       {/* Content */}
       <p className="text-gray-700 overflow-hidden md:max-h-36 max-h-70  mb-2 font-roboto">
@@ -19,7 +38,7 @@ export const ArticleScientifique = ({ title, content, readMoreLink, pdfLink, onA
 
     <div className="flex justify-between items-center">
     {/* Read More Button */}
-    <a href={readMoreLink} target="_blank" rel="noopener noreferrer" className="text-[#3692FA] font-montserrat hover:underline">
+    <a href={"../readMoreelink"} target="_blank" rel="noopener noreferrer" className="text-[#3692FA] font-montserrat hover:underline">
         Read More
     </a>
 
@@ -31,9 +50,9 @@ export const ArticleScientifique = ({ title, content, readMoreLink, pdfLink, onA
         </a>
 
         {/* Add to Favorites Button */}
-        <button onClick={onAddToFavorites} className="ml-2 bg-transparent text-[#3692FA] font-montserrat px-4 py-2 rounded-md">
-        <img src={favoritIcon} alt="" className="w-full h-auto" />
-        </button>
+        <button onClick={handleAddToFavorites} className="ml-2 bg-transparent text-[#3692FA] font-montserrat px-4 py-2 rounded-md">
+        <img src={isFavorite ? favoritAddedIcon : favoritIcon} alt="" className="w-full h-auto" />
+      </button>
     </div>
     </div>
     </div>

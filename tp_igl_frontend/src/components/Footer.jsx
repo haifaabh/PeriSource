@@ -8,7 +8,7 @@ const Footer=()=>{
 
     
     return(
-<div className="bg-white lg:h-60 h-200 p-6 borderTopUser w-screen">
+<div id="Contact" className="bg-white lg:h-60 h-200 p-6 borderTopUser w-screen">
 <div className="container mx-auto justify-between flex flex-wrap">
     <div className="w-full sm:w-1/2 md:w-1/4 xl:w-1/6 p-4 ml-4 space-y-4 font-bold font-rammeto text-2xl text-[#3F3F3F]">
     <img src={NameLogo} alt="PeriSource" className="md:w-full w-[70%] h-[auto] " />
