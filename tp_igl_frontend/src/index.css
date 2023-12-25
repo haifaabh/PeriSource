@@ -70,4 +70,28 @@ body {
   right: 20px; 
 }
 
+/* Styles pour le défilement horizontal */
+.scrollbar::-webkit-scrollbar {
+  height: 8px; /* Ajustez la hauteur du défilement */
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: #a0aec0; /* Couleur grise pour la poignée du défilement */
+  border-radius: 6px;
+  width: 4px; /* Ajustez la largeur de la poignée du défilement */
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background-color: #cbd5e0; /* Couleur grise pour la piste du défilement */
+}
+
+/* Styles pour le défilement vertical (si nécessaire) */
+.scrollbar::-webkit-scrollbar-thumb:vertical {
+  background-color: #a0aec0;
+}
+
+.scrollbar::-webkit-scrollbar-track:vertical {
+  background-color: #cbd5e0;
+}
+
 
