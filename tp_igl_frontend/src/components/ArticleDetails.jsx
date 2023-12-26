@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+// import PDFViewer from './PDFViewer';
 const ArticleDetails = ({ articleInfo }) => {
   const [articleData, setArticleData] = useState({
     title: '',
@@ -28,6 +28,7 @@ const ArticleDetails = ({ articleInfo }) => {
   
 
   return (
+    <div>
     <div className="bg-white p-8 m-4 rounded-md font-montserrat">
       <div>
         <label className="text-lg font-semibold">Title:</label>
@@ -41,7 +42,7 @@ const ArticleDetails = ({ articleInfo }) => {
       <div className="mt-4">
         <label className="text-lg font-semibold">Abstract:</label>
         <textarea
-          className="w-full p-2 border rounded mt-2"
+          className="w-full p-2 border rounded mt-2 h-52"
           value={articleData.abstract}
           onChange={(e) => handleInputChange('abstract', e.target.value)}
         />
@@ -49,7 +50,7 @@ const ArticleDetails = ({ articleInfo }) => {
       <div className="mt-4">
         <label className="text-lg font-semibold">Text of the Article:</label>
         <textarea
-          className="w-full p-2 border rounded mt-2"
+          className="w-full p-2 border rounded mt-2 h-60"
           value={articleData.text}
           onChange={(e) => handleInputChange('text', e.target.value)}
         />
@@ -108,7 +109,15 @@ const ArticleDetails = ({ articleInfo }) => {
       <button className="bg-blue-500 text-white px-4 py-2 mt-4 rounded" onClick={() => console.log('Save clicked', articleData)}>
         Save
       </button>
+
+      {/* <div className='bg-white p-8 m-4 rounded-md font-montserrat'>
+       <label className="text-lg font-semibold">PDF Viewer:</label>
+        {articleData.url && <PDFViewer pdfUrl={articleData.url} />}
+      </div>    */}
+      </div>
     </div>
+
+    
   );
 };
 
