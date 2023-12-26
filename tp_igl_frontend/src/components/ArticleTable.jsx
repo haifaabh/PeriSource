@@ -7,24 +7,34 @@ const ArticleTable = () => {
     { id: 2, title: 'Article 2' },
     { id: 3, title: 'Article 3' },
     { id: 4, title: 'Article 4' },
+    { id: 5, title: 'Article 5' },
+    { id: 6, title: 'Article 6' },
+    { id: 7, title: 'Article 7' },
+    { id: 8, title: 'Article 8' },
     // Add more articles as needed
   ];
 
+  // Divide the articles array into two equal parts
+  const halfIndex = Math.ceil(articles.length / 2);
+  const leftTableData = articles.slice(0, halfIndex);
+  const rightTableData = articles.slice(halfIndex);
+
   return (
-    <div className='flex flex-col lg:flex-row justify-between bg-white m-6 rounded-xl pb-5'>
+    <div className='flex flex-col lg:flex-row justify-between bg-white m-8 rounded-xl pb-5'>
       {/* Left Table */}
-      <div className='lg:w-1/2 ml-8'>
+      <div className='lg:w-1/2'>
         <table className='w-full'>
           <thead className='mb-3'>
             <tr className='text-left'>
-              <th >Article Title</th>
+              <th>Article Title</th>
+            
             </tr>
           </thead>
           <tbody>
-            {articles.map((article) => (
-              <tr  key={article.id}>
+            {leftTableData.map((article) => (
+              <tr key={article.id}>
                 <td>{article.title}</td>
-                <td>
+                <td className='flex justify-center items-center'>
                   <button className='bg-blue-500 text-white px-4 py-2 rounded'>
                     Read More
                   </button>
@@ -35,24 +45,21 @@ const ArticleTable = () => {
         </table>
       </div>
 
-
-{/* Divider Line */}
-<div className='border-l lg:hidden border-gray-900 h-full'></div>
-
       {/* Right Table */}
       <div className='lg:w-1/2'>
         <table className='w-full'>
-          <thead className='mb-3 hidden lg:table-header-group '>
+          <thead className='mb-3 hidden lg:table-header-group'>
             <tr className='text-left'>
               <th>Article Title</th>
+              
             </tr>
           </thead>
-          <tbody >
-            {articles.map((article) => (
+          <tbody>
+            {rightTableData.map((article) => (
               <tr key={article.id}>
-                <td >{article.title}</td>
-                <td>
-                  <button className='bg-blue-500 text-white px-4 py-2 rounded'>
+                <td>{article.title}</td>
+                <td className='flex justify-center items-center'>
+                  <button className='bg-blue-500 text-white px-4 py-2 rounded sm:ml-[20vw] '>
                     Read More
                   </button>
                 </td>
