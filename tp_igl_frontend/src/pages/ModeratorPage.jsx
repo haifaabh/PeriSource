@@ -8,7 +8,6 @@ import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import NavbarModerator from '../components/NavbarModerator';
 import Footer from '../components/Footer';
 import ArticleTable from '../components/ArticleTable';
-//import PDFViewer from '../components/PDFViewer';
 
 export const ModeratorPage = () => {
   return (
@@ -44,11 +43,7 @@ Thank you for your commitment to excellence!</p>
      <ArticleTable/>
     </div>
     </div>    
-{/* 
-    <div className="min-h-screen flex items-center justify-center">
-      <h1 className="text-3xl font-bold mb-4">PDF Viewer App</h1>
-      <PDFViewer />
-    </div> */}
+
   </div>
     );
   }
