@@ -18,65 +18,65 @@ function SignUp() {
   };
 
   return (
-   <>
+   <div>
   <div className='relative flex'>
   <img src={Back} className='ml-0 mt-[-40px] hidden md:flex lg:flex' alt="" />
 <img src={backRespo} className=' block sm:block w-full h-full absolute inset-0 md:hidden lg:hidden' alt="" />
 
-      <div className='lg:ml-[-250px] md:ml-[-400px] z-10  transition-all duration-500'>
- <form action=''onSubmit={handleSubmit}  className='md:mt-0 mt-[12rem] mx-auto w-[100%] p-8 rounded-lg ' >
+<div className='lg:ml-[-250px] md:ml-[-400px] z-10 mx-auto transition-all duration-500'>
+ <form action=''onSubmit={handleSubmit}  className='max-w-[400px] lg:max-w-[600px] md:w-[100%] md:mt-0 mt-[12rem] mx-auto w-[100%] p-8 rounded-lg' >
  <h3 className='text-3xl font-bold text-blue-900 mb-6 ml-3'>Create account</h3>
             <div className='mb-6'>
-              <div className='flex items-center bg-gray-300 p-2 rounded-[20px] '>
+              <div className='flex items-cente bg-white p-2 rounded-[20px] '>
                 <PersonOutlineOutlinedIcon className='text-black' />
                 <input
                   type='text'
                   name='fullName'
                   id='fullName'
                   placeholder='Full Name'
-                  className='ml-2 w-[100%] h-10 bg-gray-300 outline-none'
+                  className='ml-2 w-[100%] h-10 bg-white outline-none'
                   onChange={ (e) => setFullName(e.target.value)}
                 />
               </div>
             </div>
 
             <div className='mb-4'>
-              <div className='flex items-center bg-gray-300 p-2 rounded-[20px]'>
+              <div className='flex items-center bg-white p-2 rounded-[20px]'>
                 <MailOutlineIcon className='text-black' />
                 <input
                   type='email'
                   name='email'
                   id='email'
                   placeholder='Email'
-                  className='ml-2 w-[100%] h-10 bg-gray-300 outline-none'
+                  className='ml-2 w-[100%] h-10 bg-white outline-none'
                 onChange={ (e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
 
             <div className='mb-4'>
-              <div className='flex items-center bg-gray-300 p-2 rounded-[20px]'>
+              <div className='flex items-center bg-white p-2 rounded-[20px]'>
                 <PersonOutlineOutlinedIcon className='text-black' />
                 <input
                   type='text'
                   name='username'
                   id=''
                   placeholder='Username'
-                  className='ml-2 w-[100%] h-10 bg-gray-300 outline-none'
+                  className='ml-2 w-[100%] h-10 bg-white outline-none'
                   onChange={ (e) => setUseraname(e.target.value)}
                 />
               </div>
             </div>
 
             <div className='mb-4'>
-              <div className='flex items-center bg-gray-300 p-2 rounded-[20px]'>
+              <div className='flex items-center bg-white p-2 rounded-[20px]'>
                 <LockOutlinedIcon className='text-black' />
                 <input
                   type='password'
                   name='password'
                   id='password'
                   placeholder='Password'
-                  className='ml-2 w-[100%] h-10 bg-gray-300 outline-none'
+                  className='ml-2 w-[100%] h-10 bg-white outline-none'
                   onChange={ (e) => setPassword(e.target.value)}
 
                 />
@@ -84,14 +84,14 @@ function SignUp() {
             </div>
 
             <div className='mb-4'>
-              <div className='flex items-center bg-gray-300 p-2 rounded-[20px]'>
+              <div className='flex items-center bg-white p-2 rounded-[20px]'>
                 <LockOutlinedIcon className='text-black' />
                 <input
                   type='password'
                   name='confirmPassword'
                   id='confirmPassword'
                   placeholder='Confirm your password'
-                  className='ml-2 w-[100%] h-10 bg-gray-300 outline-none'
+                  className='ml-2 w-[100%] h-10 bg-white outline-none'
                   onChange={(e) => setPasswordCheck(e.target.value)}
                 />
               </div>
@@ -111,7 +111,7 @@ function SignUp() {
           </form>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 export default SignUp

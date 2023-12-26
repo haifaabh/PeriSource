@@ -11,7 +11,7 @@ import Footer from '../components/Footer';
 export const HomePage= () => {
 
   return (
-<>
+<div>
 <Navbar/>
 <div>
   <div id="Home" className='flex flex-col lg:flex-row justify-between bg-white m-6 rounded-xl'>
@@ -74,7 +74,9 @@ export const HomePage= () => {
 </div>
 
 </div>
+<div id="Contact">
 <Footer/>
-</>
+</div>
+</div>
   );
 }

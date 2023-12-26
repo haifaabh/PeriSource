@@ -13,6 +13,7 @@ import { ModeratorPage } from './pages/ModeratorPage';
 import { HomePage } from './pages/HomePage';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import ExampleArticle from './pages/ExampleArticle';
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,11 @@ const router = createBrowserRouter([
     path: "signup",
     element: <SignUp/>,
   },
+  {
+    path:"exampleArticle",
+    element:<ExampleArticle/>
+
+  }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
