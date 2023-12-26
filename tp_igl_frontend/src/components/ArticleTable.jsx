@@ -14,52 +14,21 @@ const ArticleTable = () => {
     // Add more articles as needed
   ];
 
-  // Divide the articles array into two equal parts
-  const halfIndex = Math.ceil(articles.length / 2);
-  const leftTableData = articles.slice(0, halfIndex);
-  const rightTableData = articles.slice(halfIndex);
-
   return (
     <div className='flex flex-col lg:flex-row justify-between bg-white m-8 rounded-xl pb-5'>
-      {/* Left Table */}
-      <div className='lg:w-1/2'>
+      <div className='lg:w-full '>
         <table className='w-full'>
           <thead className='mb-3'>
             <tr className='text-left'>
-              <th>Article Title</th>
-            
+              <th className='font-montserrat font-bold pb-4'>Article Title</th>
             </tr>
           </thead>
           <tbody>
-            {leftTableData.map((article) => (
+            {articles.map((article) => (
               <tr key={article.id}>
-                <td>{article.title}</td>
-                <td className='flex justify-center items-center'>
-                  <button className='bg-blue-500 text-white px-4 py-2 rounded'>
-                    Read More
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Right Table */}
-      <div className='lg:w-1/2'>
-        <table className='w-full'>
-          <thead className='mb-3 hidden lg:table-header-group'>
-            <tr className='text-left'>
-              <th>Article Title</th>
-              
-            </tr>
-          </thead>
-          <tbody>
-            {rightTableData.map((article) => (
-              <tr key={article.id}>
-                <td>{article.title}</td>
-                <td className='flex justify-center items-center'>
-                  <button className='bg-blue-500 text-white px-4 py-2 rounded sm:ml-[20vw] '>
+                <td className='font-roboto'>{article.title}</td>
+                <td className='flex justify-center items-center mb-4'>
+                  <button className=' text-[#002366] font-semibold lg:px-8 md:px-6 sm:px-5 py-1.5 rounded-full border border-white shadow drop-shadow-sm'>
                     Read More
                   </button>
                 </td>
