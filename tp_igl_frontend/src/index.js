@@ -14,6 +14,8 @@ import { HomePage } from './pages/HomePage';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import ExampleArticle from './pages/ExampleArticle';
+import { FavorisPage } from './pages/FavorisPage';
+import { ReadMorePage } from './pages/ReadMorePage';
 
 const router = createBrowserRouter([
   {
@@ -52,7 +54,15 @@ const router = createBrowserRouter([
     path:"exampleArticle",
     element:<ExampleArticle/>
 
-  }
+  },
+    {path: "favoris",
+    element: <FavorisPage/>,
+  },
+  {
+    path: "readMoreeLink",
+    element: <ReadMorePage/>,
+  },
+
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
