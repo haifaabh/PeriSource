@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import PDFViewer from './PDFViewer';
 const ArticleDetails = ({ articleInfo }) => {
   const [articleData, setArticleData] = useState({
     title: '',
@@ -26,6 +25,15 @@ const ArticleDetails = ({ articleInfo }) => {
     }));
   };
   
+  const handleViewButtonClick=()=>{
+    const url=articleData.url;
+    if(url){
+      window.open(url,'_blank');
+      
+    }
+    else
+    console.log('URL is empty')
+  };
 
   return (
     <div>
@@ -96,24 +104,20 @@ const ArticleDetails = ({ articleInfo }) => {
           onChange={(e) => handleInputChange('publishDate', e.target.value)}
         />
       </div>
-      <div className="mt-4">
+      <div className="mt-4 flex justify-between">
         <label className="text-lg font-semibold">URL:</label>
         <input
           type="url"
           className="w-full p-2 border rounded mt-2"
           value={articleData.url}
-          onChange={(e) => handleInputChange('url', e.target.value)}
         />
+        <button className='bg-blue-500 text-white px-4 py-3 mt-4 rounded' onClick={handleViewButtonClick}>View</button>
       </div>
 
       <button className="bg-blue-500 text-white px-4 py-2 mt-4 rounded" onClick={() => console.log('Save clicked', articleData)}>
         Save
       </button>
 
-      {/* <div className='bg-white p-8 m-4 rounded-md font-montserrat'>
-       <label className="text-lg font-semibold">PDF Viewer:</label>
-        {articleData.url && <PDFViewer pdfUrl={articleData.url} />}
-      </div>    */}
       </div>
     </div>
 

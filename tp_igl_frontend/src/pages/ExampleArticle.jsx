@@ -11,7 +11,7 @@ const ExampleArticle = () => {
     references: ['React Docs', 'State Management Guide'],
     keywords: ['React', 'State Management', 'Frontend'],
     publishDate: '2023-01-15',
-    url: 'https://example.com/react-state-management',
+    url: 'https://www.google.com',
   };
 
   return (
