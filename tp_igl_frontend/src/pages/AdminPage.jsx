@@ -1,6 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
-import BodyAdmin from '../Composants/BodyAdmin';
-import HeaderAdmin from '../Composants/HeaderAdmin';
+import BodyAdmin from '../components/BodyAdmin';
+import HeaderAdmin from '../components/HeaderAdmin';
 
 function AdminPage() {
    

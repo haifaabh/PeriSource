@@ -7,7 +7,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import { UserPage } from './pages/UserPage';
-import { AdminPage } from './pages/AdminPage';
+import  AdminPage  from './pages/AdminPage';
 import { AuthPage } from './pages/AuthPage';
 import { ModeratorPage } from './pages/ModeratorPage';
 import { HomePage } from './pages/HomePage';

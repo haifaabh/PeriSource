@@ -5,7 +5,7 @@ const ExampleArticle = () => {
   const exampleArticle = {
     title: 'React and State Management',
     abstract: 'A deep dive into state management in React applications.',
-    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
+    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...RJKDSFKFGHKFDJHGKJFDSBKJSDBKVJBSDKJBVKJSDFBVKSBDJDVBFN?VBDFKJBV?J?FSDBV?DFBKVBSKJDVMSDKJMjskCK<KLDVKJBSFJKBVSJDBVSFKJDBVJFDB',
     authors: ['John Doe', 'Jane Smith'],
     institutions: ['University of React', 'Tech Institute'],
     references: ['React Docs', 'State Management Guide'],
@@ -18,6 +18,7 @@ const ExampleArticle = () => {
     <div>
       <div className="font-bold text-2xl ml-6 mt-4">Article Details</div>
       <ArticleDetails articleInfo={exampleArticle} />
+      
     </div>
   );
 };
