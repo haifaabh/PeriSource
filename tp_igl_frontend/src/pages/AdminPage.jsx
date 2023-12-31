@@ -1,7 +1,7 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
-import BodyAdmin from '../Components/BodyAdmin';
-import HeaderAdmin from '../Components/HeaderAdmin';
-import ManageModerators from '../Components/ManageModerators';
+import BodyAdmin from '../components/BodyAdmin';
+import HeaderAdmin from '../components/HeaderAdmin';
+import ManageModerators from '../components/ManageModerators';
 function AdminPage() {
    
     const [largeurEcran, setLargeurEcran] = useState(window.innerWidth);
