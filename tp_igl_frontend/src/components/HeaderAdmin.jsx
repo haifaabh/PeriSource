@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-function HeaderAdmin({largeurEcran,handleUrlSubmit}){
+function HeaderAdmin({largeurEcran,handleUploadArticles,handleManageModeratore,showAddModeratorePage}){
     const WidthLimit1 = 1430
     const WidthLimit2 = 1180
    
@@ -20,14 +20,14 @@ function HeaderAdmin({largeurEcran,handleUrlSubmit}){
                 </div>
                 <div className={`flex  justify-between  items-center `} style={{ marginRight: largeurEcran < WidthLimit1 ? largeurEcran<520?'15px': '40px' : '101px', width: largeurEcran < WidthLimit2 ? '600px' : '712px' }} id="right menu">
                     <div className="flex w-365 items-start gap-[13px] lg:gap-10 " id="upload and manage moderator">
-                        <div className="flex p-2 px-5 lg:px-14 items-center gap-8 rounded-full bg-blue-500" id="uploadarticle">
-                            <p className="text-white font-roboto text-16 font-bold leading-6 cursor-pointer" onClick={handleUrlSubmit} style={{ fontSize: largeurEcran < 570 ? '11px' : '16px' }}>Upload Articles</p>
+                        <div className="flex p-2 px-5 lg:px-14 items-center gap-8 rounded-full bg-blue-500" id="uploadarticle" style={{background:showAddModeratorePage?'#FFF':'#36A3FA'}}>
+                            <p className="text-white font-roboto text-[10px] font-[1000] leading-6 cursor-pointer" onClick={handleUploadArticles} style={{ fontSize: largeurEcran < 570 ? '11px' : '16px' ,color:showAddModeratorePage?'#585858':'#FFF' }}>Upload Articles</p>
                         </div>
-                        <div className="flex py-2 items-center gap-2 " id="manage moderator">
-                            <p className="text-Neutral-D_Grey font-roboto text-16 font-medium leading-6 " style={{ fontSize: largeurEcran < 570 ? '11px' : '16px' }}>Manage Moderators</p>
-                            <div className='cursor-pointer'>
+                        <div className="flex py-2 items-center gap-2 rounded-[30px] p-[4px]" id="manage moderator" style={{background:showAddModeratorePage?'#36A3FA':'#FFF'}}>
+                            <p className=" font-roboto text-[10px] font-[1000] leading-6 " style={{ fontSize: largeurEcran < 570 ? '11px' : '16px',color:showAddModeratorePage?'#FFF':'#585858' }}>Manage Moderators</p>
+                            <div className='cursor-pointer' onClick={handleManageModeratore}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="8" viewBox="0 0 14 8" fill="none">
-                                    <path d="M1 1L7 7L13 1H1Z" fill="#3F3F3F" stroke="#3F3F3F" strokeWidth="2" strokeLinecap="round" strokeinejoin="round"></path>
+                                    <path d="M1 1L7 7L13 1H1Z" fill={showAddModeratorePage?"#FFF":"#3F3F3F"}   stroke={showAddModeratorePage?"#FFF":"#3F3F3F"} strokeWidth="2" strokeLinecap="round" strokeinejoin="round"></path>
                                 </svg>
                             </div>
                         </div>
