@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 
-import '../index.css'
+import '../App.css'
 
 
 
@@ -12,9 +12,9 @@ function UploadArticles({filesList,handleShowUploadArticles}) {
 
     return (
        
-            <div className='flex flex-col w-[460px] h-[428px] justify-center items-center flex-shrink-0 rounded-md border border-solid border-blue-200 bg-Mono-White shadow-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10' >
-                <div id='header' className='flex w-full  h-[60px] px-[38px] '>
-                    <p className="mt-[21px] mb-[15px] text-Text-Active font-Montserrat text-20 font-semibold"> Upload Articles</p>
+            <div className='flex flex-col w-[460px] h-[428px] justify-center items-center flex-shrink-0 rounded-md border border-solid border-blue-200 bg-Mono-White shadow-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 max-[500px]:w-full' >
+                <div id='header' className='flex w-full  h-[60px] px-[38px]  '>
+                    <p className="mt-[21px] mb-[15px] text-Text-Active font-montserrat text-20 font-semibold max-[500px]:text-10"> Upload Articles</p>
                     <div onClick={handleShowUploadArticles} className='w-[12px] h-[12px] ml-auto my-[24px] cursor-pointer '>
                         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 12 12" fill="none">
                             <g clipPath="url(#clip0_210_3623)">
@@ -28,14 +28,14 @@ function UploadArticles({filesList,handleShowUploadArticles}) {
                         </svg>
                     </div>
                 </div>
-                <div id='Body' className='w-full border border-t-[1px] border-b-[1px] px-[38px] py-[35px]'>
-                    <div id='Articles list' className='w-[384px] h-[221px] py-[20px] pt-[12px] pb-[9px]   rounded-lg border border-solid border-Border bg-White ' >
-                        <div className='flex w-[384px]   flex-col p-0'>
+                <div id='Body' className='w-full border border-t-[1px] border-b-[1px] px-[38px] py-[35px] max-[502px]:px-0'>
+                    <div id='Articles list' className='w-[384px] h-[221px] py-[20px] pt-[12px] pb-[9px]   rounded-lg border border-solid border-Border bg-White max-[502px]:w-full' >
+                        <div className='flex w-[384px]   flex-col p-0 max-[502px]:w-full'>
                             <div id='list Header' className='w-full h-[46px] px-[12px] pt-[18px] pb-[10px] grid grid-cols-2 mr-auto'>
                                 <p className="text-Primary font-Roboto text-base font-medium leading-6">No</p>
                                 <p className="text-Primary font-Roboto text-base font-medium leading-6 whitespace-nowrap mr-auto ">File Name</p>
                             </div>
-                            <div className='w-[384px] h-[1px] bg-gray-200'></div>
+                            <div className='w-[384px] h-[1px] bg-gray-200 max-[502px]:w-full'></div>
                         </div>
                         <div className='w-full h-[154px] overflow-x-hidden overflow-y-auto scrollbar'>
                             {filesList.map((file, index) => (
@@ -59,7 +59,7 @@ function UploadArticles({filesList,handleShowUploadArticles}) {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className='w-[384px] h-[1px] bg-gray-200'></div>
+                                    <div className='w-[384px] h-[1px] bg-gray-200 max-[502px]:w-full'></div>
                                 </div>
 
                             ))}

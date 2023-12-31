@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import UploadArticles from './UploadArticles'
 
 
-function BodyAdmin({ largeurEcran, handleUrlSubmit, handleUrlChange, usersNumber, authorsNumber, articlesNumber,showInvalideUrl, showUploadArticles,filesList,handleShowUploadArticles }) {
+function BodyAdmin({ largeurEcran,UrlInputValue, handleUrlSubmit, handleUrlChange, usersNumber, authorsNumber, articlesNumber,showInvalideUrl, showUploadArticles,filesList,handleShowUploadArticles }) {
     const WidthLimit1 = 1430
     const WidthLimit2 = 1180
     
@@ -83,8 +83,8 @@ function BodyAdmin({ largeurEcran, handleUrlSubmit, handleUrlChange, usersNumber
                         </div>
 
 
-                        <div className="inline-flex px-[20px]  mt-[15px] justify-center items-center rounded-[12px] bg-blue-200 xl:w-[700px] lg:w-[600px] md:w-[400px] sm:w-[200px]" style={{ width: largeurEcran > 850 ? largeurEcran / 2 : 3 * (largeurEcran / 4),border:showInvalideUrl? '1px solid red':'none' }} id="upload bar">
-                            <input type="url" className=" outline-none text-[rgba(30,30,30,0.50)] font-roboto text-base font-semibold mr-auto bg-blue-200 w-[500px] " placeholder="Paste Your Articles URL here" onChange={handleUrlChange} disabled={showUploadArticles}/>
+                        <div className="inline-flex px-[20px]  mt-[15px] justify-center items-center rounded-[12px] bg-blue-200 " style={{ width: largeurEcran > 850 ? largeurEcran / 2 : 3 * (largeurEcran / 4),border:showInvalideUrl? '1px solid red':'none' }} id="upload bar">
+                            <input type="url" className=" outline-none text-[rgba(30,30,30,0.50)] font-roboto text-base font-semibold mr-auto bg-blue-200 w-[500px] " placeholder="Paste Your Articles URL here" onChange={handleUrlChange} disabled={showUploadArticles} /*value={UrlInputValue}*//>
                             <svg className="cursor-pointer" onClick={handleUrlSubmit} xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 45 45" fill="none">
                                 <rect width="45" height="45" rx="12" fill="#002366" />
                                 <path d="M11.25 29.1728V31.9301C11.25 32.6614 11.5463 33.3628 12.0738 33.8799C12.6012 34.397 13.3166 34.6875 14.0625 34.6875H30.9375C31.6834 34.6875 32.3988 34.397 32.9262 33.8799C33.4537 33.3628 33.75 32.6614 33.75 31.9301V29.1728M15.4688 18.1434L22.5 11.25M22.5 11.25L29.5312 18.1434M22.5 11.25V27.7941" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
