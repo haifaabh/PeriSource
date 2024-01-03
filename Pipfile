@@ -12,6 +12,11 @@ django-allauth = "*"
 elasticsearch-dsl = "*"
 django-elasticsearch-dsl = "*"
 pymupdf = "*"
+spacy = "*"
+unidecode = "*"
+pypdf2 = "*"
+"pdfminer.six" = "*"
+gdown = "*"
 
 [dev-packages]
 

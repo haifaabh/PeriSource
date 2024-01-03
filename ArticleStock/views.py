@@ -2,6 +2,10 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 from elasticsearch_dsl import connections
+from ArticleStock import extract_title
+
+from ArticleStock.extract_infos import extract_clean_text_from_pdf, extract_information
+from ArticleStock.extract_references import extract_reference_section, extract_references_as_list
 from .models import Article
 from django.http import JsonResponse
 from elasticsearch_dsl import Search
@@ -14,7 +18,8 @@ from .serializers import ArticleSerializer
 import fitz
 import requests
 from django.shortcuts import get_object_or_404
-
+import json
+import re
 
 @api_view(['GET'])
 def say_hello(request):
@@ -102,33 +107,7 @@ def extract_text_from_pdf(request):
 
 
 
-# from elasticsearch_dsl import Q
 
-# @api_view(['POST'])
-# def search_articles(request):
-#     try:
-#         # Get the search keyword from the POST data
-#         search_keyword = request.data.get('keyword')
-
-#         if not search_keyword:
-#             return Response({'success': False, 'error': 'Search keyword is required'})
-
-#         # Construct a query to search across all fields
-#         query = Q('multi_match', query=search_keyword, fields=['titre', 'resume', 'auteurs', 'institutions', 'mots_cles', 'texte_integral', 'url_pdf', 'references_bibliographiques'])
-
-#         # Create a search instance
-#         s = Search(index='articles_igl').query(query)
-
-#         # Execute the search and retrieve the results
-#         response = s.execute()
-
-#         # Get the IDs of the articles where the keyword is found
-#         article_ids = [hit.meta.id for hit in response.hits]
-
-#         return Response({'success': True, 'article_ids': article_ids})
-
-    # except Exception as e:
-    #     return Response({'success': False, 'error': str(e)})
 
 
 from elasticsearch_dsl import Q
@@ -220,3 +199,44 @@ def search_articles_by_field(request, field):
 
     except Exception as e:
         return Response({'success': False, 'error': str(e)})
+    
+@api_view(['POST'])
+def upload(request):
+    if 'url' not in request.data:
+        return Response({'error': 'URL is required in the POST data'}, status=status.HTTP_400_BAD_REQUEST)
+
+    url = request.data['url']
+    title = extract_title.pdf_title_from_drive(url)
+    title = extract_title.sanitize(' '.join(title.split()))
+
+
+    article_text = extract_clean_text_from_pdf(url)
+    text=article_text
+    result = extract_information(article_text)
+
+
+    text = re.sub(r'\[\s*(.*?)\s*\]', r'[\1]', text)
+    reference_section = extract_reference_section(text)
+    references_list = extract_references_as_list(reference_section)
+
+    transformed_info = {
+    "titre": title,
+    "resume": result.get("abstract", None),
+    "auteurs": result.get("authors", "").split(", "), 
+    "institutions": result.get("institutions", "").split(", "),
+    "mots_cles": result.get("keywords", "").split(", "),
+    "texte_integral": result.get("introduction",None), 
+    "url_pdf": url,
+    "references_bibliographiques": references_list
+    }
+    serializer = ArticleSerializer(data=transformed_info)
+    if serializer.is_valid():
+        article_data = serializer.validated_data
+        article_instance = Article(**article_data)
+        
+        # Update Elasticsearch index
+        ArticleDocument().update(article_instance)
+        
+        return Response({'message': 'Article added successfully'})
+    
+    return Response({'error': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)

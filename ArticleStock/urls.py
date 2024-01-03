@@ -13,5 +13,6 @@ path('articles/<str:article_id>/', views.retrieve_article_by_id, name='retrieve_
 path('search_auteurs/',views.search_articles_by_auteurs),
 path('search_mots_cles/',views.search_articles_by_mots_cles),
 path('search_institutions/',views.search_articles_by_institutions),
+path('upload/',views.upload)
 
 ]

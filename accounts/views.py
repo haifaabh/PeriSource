@@ -94,7 +94,7 @@ def delete_moderator(request, id):
 @api_view(['POST'])
 def add_article_to_favorites(request, username):
     try:
-        user = CustomUser.objects.get(username=username)
+        user = CustomUser.objects.get(username=username,role=CustomUser.Role.User)
     except CustomUser.DoesNotExist:
         return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
