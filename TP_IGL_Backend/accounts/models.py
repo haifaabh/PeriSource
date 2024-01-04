@@ -1,5 +1,8 @@
 from django.db import models
+from allauth.account.models import EmailAddress
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from ArticleStock.models import Article
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, name, role, password=None, **extra_fields):
@@ -31,8 +34,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(max_length=30, choices=Role.choices, default=Role.User)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
+    favorites = models.JSONField(default=list, blank=True)  # Store a list of article IDs
 
     objects = CustomUserManager()
+    
+    def get_email_verified(self):
+        email = EmailAddress.objects.get_primary(self)
+        return email.verified
+
+    def has_verified_email(self):
+        return self.is_active and self.get_email_verified()
+    
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'name']
