@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import register, MyTokenObtainPairView,UserViewSet,user_detail,add_article_to_favorites,get_moderators,delete_moderator
+from .views import *
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -14,5 +14,5 @@ urlpatterns = [
   path('delete_moderator/<int:id>/', delete_moderator),
   path('users/<str:username>/', user_detail), 
   path('add_to_favorites/<str:username>/', add_article_to_favorites),
-
+  path('consulter_favories', consulter_favories),
 ]

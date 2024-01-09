@@ -113,3 +113,23 @@ def add_article_to_favorites(request, username):
 
     user_serializer = CustomUserSerializer(user)
     return Response(user_serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def consulter_favories(request, username):
+    try:
+        user = CustomUser.objects.get(username=username, role=CustomUser.Role.User)
+    except CustomUser.DoesNotExist:
+        return Response({"detail": "User not found or not of the required role"}, status=status.HTTP_404_NOT_FOUND)
+
+    article_ids = user.favorites
+    articles = []
+
+    for article_id in article_ids:
+        article = ArticleDocument.get(id=article_id).to_dict()
+        articles.append(article)
+
+    response_data = {
+        "articles": articles,
+    }
+
+    return Response(response_data, status=status.HTTP_200_OK)
