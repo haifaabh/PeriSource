@@ -53,7 +53,7 @@ def add_article(request):
 @api_view(['GET'])
 def retrieve_all_data(request):
     # Retrieve all data from Elasticsearch
-    s = Search(index='calmedown').query('match_all')
+    s = Search(index='articles_igl').query('match_all')
     s = s.extra(size=1000)  # Change 1000 to the desired number of hits
 
     # Execute the search and retrieve the results
@@ -73,7 +73,7 @@ def retrieve_all_data(request):
 @api_view(['GET'])
 def retrieve_validated_data(request):
     # Retrieve data from Elasticsearch where validated is True
-    s = Search(index='calmedown').query('bool', filter=Q('term', validated=True))
+    s = Search(index='articles_igl').query('bool', filter=Q('term', validated=True))
     s = s.extra(size=1000)  # Change 1000 to the desired number of hits
 
     # Execute the search and retrieve the results
@@ -153,7 +153,7 @@ def search_articles(request):
 
 
         # Create a search instance
-        s = Search(index='calmedown').query(query)
+        s = Search(index='articles_igl').query(query)
 
         # Execute the search and retrieve the results
         response = s.execute()
@@ -211,7 +211,7 @@ def search_articles_by_field(request, field):
 
 
         # Create a search instance
-        s = Search(index='haifa').query(query)
+        s = Search(index='articles_igl').query(query)
 
         # Execute the search and retrieve the results
         response = s.execute()
