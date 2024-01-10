@@ -7,7 +7,7 @@ from .models import Article
 @registry.register_document
 class ArticleDocument(Document):
     class Index:
-        name = 'articles_igl'
+        name = 'calmedown'
         settings = {'number_of_shards': 1, 'number_of_replicas': 0}
 
     titre = fields.TextField()
@@ -18,7 +18,9 @@ class ArticleDocument(Document):
     texte_integral = fields.TextField()
     url_pdf = fields.TextField()
     references_bibliographiques = fields.TextField()
-
+    validated = fields.BooleanField()
+    date = fields.DateField()
+    
 
     class Django:
         model = Article
