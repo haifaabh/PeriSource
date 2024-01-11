@@ -14,5 +14,4 @@ urlpatterns = [
   path('delete_moderator/<int:id>/', delete_moderator),
   path('users/<str:username>/', user_detail), 
   path('add_to_favorites/<str:username>/', add_article_to_favorites),
-
 ]

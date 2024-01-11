@@ -6,14 +6,170 @@ import UserPageW from '../assets/UserPageW.svg';
 import { View, TouchableOpacity, Text } from 'react';
 import { FilterPage } from '../pages/FilterPage';
 import { useState } from 'react'; 
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+import Slider from 'react-slick';
+import { ArticleScientifique } from './ArticleScientifique';
+
+
 
 
 export const HeroUser = () => {
-  console.log('Heroo Rendered');
+  const getCsrfToken = () => {
+    const csrfCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+    if (csrfCookie) {
+      return csrfCookie.split('=')[1];
+    }
+    return null;
+  };
 
-
-   const [isFilterVisible, setFilterVisible] = useState(false);
   
+
+  const [articles,setArticles] = useState([]);
+  const [articlesId,setArticlesID] = useState([]);
+
+    const [isFilterVisible, setFilterVisible] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchEff, setSearch] = useState(false);
+
+    const [filteredArticles, setFilteredArticles] = useState([]);
+    const [originalArticles, setOriginalArticles] = useState([]);
+
+    const handleApplyFilter = async (filterCriteria) => { 
+      let articleIdsAuteurs = [];
+      let articleIdsMotsCles = [];
+      let articleIdsInstitutions = [];
+    
+      try {
+        if (filterCriteria.authors && filterCriteria.authors.length > 0) {
+          const responseAuteurs = await axios.post('http://localhost:8000/ArticleStock/search_auteurs/', {
+            keywords: filterCriteria.authors,
+          });
+          articleIdsAuteurs = responseAuteurs.data.article_ids;
+          console.log('Articles filtered by auteurs:', articleIdsAuteurs);
+        }
+    
+        if (filterCriteria.keywords && filterCriteria.keywords.length > 0) {
+          console.log('keywooooooooords:', filterCriteria.keywords);
+          const responseMotsCles = await axios.post('http://localhost:8000/ArticleStock/search_mots_cles/', {
+            keywords: filterCriteria.keywords,
+          });
+          articleIdsMotsCles = responseMotsCles.data.article_ids;
+          console.log('Articles filtered by mots_cles:', articleIdsMotsCles);
+        }
+    
+        if (filterCriteria.institutions && filterCriteria.institutions.length > 0) {
+          const responseInstitutions = await axios.post('http://localhost:8000/ArticleStock/search_institutions/', {
+            keywords: filterCriteria.institutions,
+          });
+          articleIdsInstitutions = responseInstitutions.data.article_ids;
+          console.log('Articles filtered by institutions:', articleIdsInstitutions);
+        }
+    
+        let commonArticleIds = [];
+    
+        if (filterCriteria.authors && filterCriteria.authors.length > 0) {
+          commonArticleIds = articleIdsAuteurs;
+        }
+    
+        if (filterCriteria.keywords && filterCriteria.keywords.length > 0) {
+          commonArticleIds = intersect_lists([commonArticleIds, articleIdsMotsCles]);
+        }
+    
+        if (filterCriteria.institutions && filterCriteria.institutions.length > 0) {
+          commonArticleIds = intersect_lists([commonArticleIds, articleIdsInstitutions]);
+        }
+        let articlesIds = [];
+        if (articlesId && articlesId.length > 0) {
+           articlesIds = intersect_lists([commonArticleIds, articlesId]);
+        }else { 
+          articlesIds = commonArticleIds;
+        }
+          const detailedArticles = await Promise.all(
+            articlesIds.map(async (articleId) => {
+              try {
+                const articleResponse = await axios.get(
+                  `http://localhost:8000/ArticleStock/articles/${articleId}`
+                );
+                return articleResponse.data.article;
+              } catch (articleError) {
+                console.error('Error fetching article:', articleError);
+                return null; 
+              }
+            })
+          );
+          setArticles(detailedArticles);
+          setSearch(true); 
+        console.log('Common Articles:', commonArticleIds);
+      } catch (error) {
+        console.error('Search error:', error);
+      }
+    };
+
+    const handleSearch = async (e) => {
+      e.preventDefault();
+      console.log('Search submitted:', searchQuery);
+    
+      try {
+        const response = await axios.post('http://localhost:8000/ArticleStock/search/', {
+          keywords: [searchQuery],
+        });
+    
+        const { success, article_ids, error } = response.data;
+        if (success) {
+          console.log('API Response:', article_ids);
+          setArticlesID(article_ids);
+          const detailedArticles = await Promise.all(
+            article_ids.map(async (articleId) => {
+              try {
+                const articleResponse = await axios.get(
+                  `http://localhost:8000/ArticleStock/articles/${articleId}`
+                );
+                return articleResponse.data.article;
+              } catch (articleError) {
+                console.error('Error fetching article:', articleError);
+                return null; 
+              }
+            })
+          );
+          setSearch(true);  
+          console.log('Detailed Articles:', detailedArticles);
+          setArticles(detailedArticles);
+
+        } else {
+          console.error('Search error:', error);
+        }
+      } catch (error) {
+        console.error('Search error:', error);
+      }
+    };  
+    
+    const sliderSettings = {
+      dots: true,
+      arrows: true,
+      prevArrow: <button className="slick-prev" aria-label="Previous" />,
+      nextArrow: <button className="slick-next" aria-label="Next" />,
+      infinite: false,
+      speed: 500,
+      slidesToShow: 2,
+      slidesToScroll: 2,
+      rows: 2,
+      responsive: [
+        {
+          breakpoint: 600,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            rows: 1,
+          },
+        },
+      ],
+    };
+  
+    const handleAddToFavorites = (index) => {
+      //console.log('Adding to favorites:', articles[index]);
+    };
+    
   return (
     <Fragment>
     <div className='bg-white borderTopUser borderBottomUser w-screen relative'>
@@ -44,6 +200,7 @@ export const HeroUser = () => {
         </div>
         <div className='flex col-span-2 items-center justify-center'>
           <div className="mb-4 flex items-center justify-center">
+          <div className="mb-4 flex items-center justify-center">
             <input
               type="text"
               placeholder="Search..."
@@ -52,8 +209,14 @@ export const HeroUser = () => {
                 border: '1px solid rgba(171, 190, 209, 0.40)',
                 borderRadius: '16px 0 0 16px',
               }}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button className="bg-[#002366] text-white p-2 px-4" style={{ borderRadius: '0 16px 16px 0' }}>
+            <button
+              className="bg-[#002366] text-white p-2 px-4"
+              style={{ borderRadius: '0 16px 16px 0' }}
+              onClick={handleSearch}
+            >
               <img src={searchIcon} alt="" className="w-[25px] h-[25px]" />
             </button>
           </div>
@@ -62,6 +225,7 @@ export const HeroUser = () => {
               <img src={filterIcon} alt="" className="w-[25px] h-[25px] mr-2" />
               Filter
             </button>
+          </div>
           </div>
         </div>
       </div>
@@ -74,7 +238,48 @@ export const HeroUser = () => {
             }}
           />
     </div>
-    <FilterPage isVisible={isFilterVisible} onClose={()=>setFilterVisible(false)} />
+    <FilterPage isVisible={isFilterVisible} onApplyFilter={handleApplyFilter} onClose={()=>setFilterVisible(false)} />
+    {searchEff && (
+    <div id="SearchResult" className="bg-white borderTopUser w-screen pb-20">
+      <h1 className="md:text-4xl sm:text-3xl text-2xl font-bold ml-[8%] mt-6 mb-16 font-montserrat text-[#002366]">
+        <span style={{ borderBottom: '2px solid #002366' }}>Search Resul</span>ts
+      </h1>
+      {articles.length > 0 ? (
+        <div className="slider-container" style={{ position: 'relative' }}>
+          <Slider {...sliderSettings}>
+            {articles.map((article, index) => (
+              <div key={index}>
+                <ArticleScientifique
+                  articleCh={article}
+                  onAddToFavorites={() => handleAddToFavorites(index)}
+                  isFavoritesPage={false}
+                />
+              </div>
+            ))}
+          </Slider>
+        </div>
+      ) : (
+        <div className="text-gray-600 text-center mt-4">Sorry, no results were found for your search.</div>
+        )}
+      </div>
+    )}
     </Fragment>
   );
+}
+
+
+function intersect_lists(arrays) {
+  if (!arrays || arrays.length === 0) {
+    return [];
+  }
+  const set = new Set(arrays[0]);
+  for (let i = 1; i < arrays.length; i++) {
+    const currentSet = new Set(arrays[i]);
+    for (const item of set) {
+      if (!currentSet.has(item)) {
+        set.delete(item);
+      }
+    }
+  }
+  return Array.from(set);
 }

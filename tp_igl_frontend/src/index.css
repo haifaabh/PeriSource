@@ -96,4 +96,15 @@ body {
 
 
 
+.button-hover:hover {
+  filter: brightness(200%); 
+}
+
+.button-hover img {
+  transition: filter 0.3s ease;
+}
+
+.button-hover:hover img {
+  filter: brightness(100%);
+}
 

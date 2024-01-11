@@ -8,10 +8,10 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 
 
-    export const FilterPage = ({ isVisible, onClose }) => {
-        const [authors, setAuthors] = useState(['']);
-        const [institutions, setinstitutions] = useState(['']);
-        const [keywords, setkeywords] = useState(['']);
+    export const FilterPage = ({ isVisible, onClose ,onApplyFilter}) => {
+        const [authors, setAuthors] = useState([""]);
+        const [institutions, setinstitutions] = useState([""]);
+        const [keywords, setkeywords] = useState([""]);
         const [startDate, setStartDate] = useState(null);
         const [endDate, setEndDate] = useState(null);
 
@@ -21,16 +21,22 @@ import 'react-datepicker/dist/react-datepicker.css';
             onClose();
           }
         };
-      
+
 
         const handleAddAuthor = () => {
+          if (authors[authors.length - 1] !== '') {
           setAuthors([...authors, '']);
+          }
         };
         const handleAddkeyWords = () => {
+          if (keywords[keywords.length - 1] !== '') {
             setkeywords([...keywords, '']);
+          }
         };
         const handleAddInstitution = () => {
+          if (institutions[institutions.length - 1] !== '') {
             setinstitutions([...institutions, '']);
+          }
         };
 
         const handleRemoveAuthor = (index) => {
@@ -65,9 +71,20 @@ import 'react-datepicker/dist/react-datepicker.css';
             setkeywords(updatedKeywords);
         };
 
+        const handleDelete = () => {
+          setAuthors(['']);
+          setinstitutions(['']);
+          setkeywords(['']);
+        };
+
       
-        const handleSubmit = (e) => {
+        const handleApplyFilter = (e) => {
+          const nonEmptyKeywords = keywords.filter(keyword => keyword.trim() !== "");
+          const nonEmptyAuthors= authors.filter(author => author.trim() !== "");
+          const nonEmptyInst= institutions.filter(institution => institution.trim() !== "");
+
           e.preventDefault();
+          onApplyFilter({ authors: nonEmptyAuthors , institutions : nonEmptyInst, keywords : nonEmptyKeywords, startDate, endDate });
           onClose();
         };
       
@@ -81,10 +98,10 @@ import 'react-datepicker/dist/react-datepicker.css';
             <div className="w-[400px] md:w-[600px] flex flex-col relative">
               <div className="bg-white rounded">
                 <button
-                  className="absolute top-2 right-2 px-2 rounded-full text-gray-600 bg-white hover:bg-gray-50 hover:text-gray-800"
+                  className="absolute top-2 right-2 px-2 rounded-full text-gray-600 bg-white hover:bg-gray-50 hover:text-white p-1 hover:hover:bg-slate-400"
                   onClick={() => onClose()}
                 >X</button>
-
+                
                 <div className="borderbottomUser p-6">
                   <h1
                     className="text-xl max-w-[600px] font-montserrat text-[#002366] font-semibold"
@@ -100,7 +117,7 @@ import 'react-datepicker/dist/react-datepicker.css';
                         <h4 className="mr-4 text-lg max-w-[600px] font-montserrat text-[#002366] font-semibold ml-4">
                             Authors
                         </h4>
-                        <button onClick={handleAddAuthor} className="rounded-full"><img src={addButton} alt="" /></button>
+                        <button onClick={handleAddAuthor} className="rounded-full button-hover"><img src={addButton} alt="" /></button>
                     </div>
                     {authors.map((author, index) => (
                         <div key={index} className="flex mb-2">
@@ -118,7 +135,7 @@ import 'react-datepicker/dist/react-datepicker.css';
                         <button
                             type="button"
                             onClick={() => handleRemoveAuthor(index)}
-                            className="bg-[#002366] text-white px-4 py-2 rounded-r-full"
+                            className="bg-[#002366] text-white px-4 py-2 rounded-r-full hover:bg-slate-400"
                         >X</button>
                         </div>
                     ))}
@@ -131,7 +148,7 @@ import 'react-datepicker/dist/react-datepicker.css';
                         <h4 className="mr-4 text-lg max-w-[600px] font-montserrat text-[#002366] font-semibold ml-4">
                             Institutions
                         </h4>
-                        <button onClick={handleAddInstitution} className="rounded-full"><img src={addButton} alt="" /></button>
+                        <button onClick={handleAddInstitution} className="rounded-full button-hover"><img src={addButton} alt="" /></button>
                     </div>
                     {institutions.map((institution, index) => (
                         <div key={index} className="flex mb-2">
@@ -149,7 +166,7 @@ import 'react-datepicker/dist/react-datepicker.css';
                         <button
                             type="button"
                             onClick={() => handleRemoveInstitution(index)}
-                            className="bg-[#002366] text-white px-4 py-2 rounded-r-full"
+                            className="bg-[#002366] text-white px-4 py-2 rounded-r-full hover:bg-slate-400"
                         >X</button>
                         </div>
                     ))}
@@ -162,7 +179,7 @@ import 'react-datepicker/dist/react-datepicker.css';
                         <h4 className="mr-4 text-lg max-w-[600px] font-montserrat text-[#002366] font-semibold ml-4">
                             Key words
                         </h4>
-                        <button onClick={handleAddkeyWords} className="rounded-full"><img src={addButton} alt="" /></button>
+                        <button onClick={handleAddkeyWords} className="rounded-full button-hover"><img src={addButton} alt="" /></button>
                     </div>
                     {keywords.map((keyword, index) => (
                         <div key={index} className="flex mb-2">
@@ -180,7 +197,7 @@ import 'react-datepicker/dist/react-datepicker.css';
                         <button
                             type="button"
                             onClick={() => handleRemoveKeywords(index)}
-                            className="bg-[#002366] text-white px-4 py-2 rounded-r-full"
+                            className="bg-[#002366] text-white px-4 py-2 rounded-r-full hover:bg-slate-400"
                         >X</button>
                         </div>
                     ))}
@@ -218,16 +235,23 @@ import 'react-datepicker/dist/react-datepicker.css';
             
       <div className='borderTopUser flex justify-end pr-4 pb-4'>
           <button
+              type="submit"  
+              className="bg-[#ABBED1] text-white p-2 px-6 rounded-full mt-4 mr-4 hover:bg-gray-700"
+              onClick={handleDelete}
+            >
+              Delete
+            </button>
+          {/* <button
             type="submit"  
             className="bg-[#ABBED1] text-white p-2 px-6 rounded-full mt-4 mr-4 hover:bg-gray-700"
             onClick={() => onClose()}
           >
             Cancel
-          </button>
+          </button> */}
           <button
               type="submit"
             className="bg-[#0979D0] text-white p-2 px-6 rounded-full mt-4 hover:bg-gray-700"
-            onClick={handleSubmit}
+            onClick={handleApplyFilter}
           >
             Apply
           </button>
