@@ -323,3 +323,9 @@ def retrieve_latest_validated_articles(request):
 
     except Exception as e:
         return Response({'error': str(e)})
+    
+@api_view(['DELETE'])
+def delete_article(request, article_id):
+    article_document = ArticleDocument.get(id=article_id)
+    article_document.delete()
+    return Response({'message': 'Article deleted successfully'})
