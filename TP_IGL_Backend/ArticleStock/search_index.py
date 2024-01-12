@@ -18,7 +18,7 @@ class ArticleDocument(Document):
     texte_integral = fields.TextField()
     url_pdf = fields.TextField()
     references_bibliographiques = fields.TextField()
-
-
+    validated = fields.BooleanField()
+    
     class Django:
         model = Article

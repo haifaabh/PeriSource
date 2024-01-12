@@ -16,6 +16,8 @@ import SignUp from './pages/SignUp';
 import ExampleArticle from './pages/ExampleArticle';
 import { FavorisPage } from './pages/FavorisPage';
 import { ReadMorePage } from './pages/ReadMorePage';
+import { AuthProvider as AuthContextProvider } from './AuthContext';
+
 
 const router = createBrowserRouter([
   {
@@ -23,43 +25,43 @@ const router = createBrowserRouter([
     element: <App/>,
   },
   {
-    path: "user",
+    path: "/user",
     element: <UserPage/>,
   },
   {
-    path: "home",
+    path: "/home",
     element: <HomePage/>,
   },
   {
-    path: "auth",
+    path: "/auth",
     element: <AuthPage/>,
   },
   {
-    path: "admin",
+    path: "/admin",
     element: <AdminPage/>,
   },
   {
-    path: "moderator",
+    path: "/moderator",
     element: <ModeratorPage/>,
   },
   {
-    path: "signin",
+    path: "/signin",
     element: <SignIn/>,
   },
   {
-    path: "signup",
+    path: "/signup",
     element: <SignUp/>,
   },
   {
-    path:"exampleArticle",
+    path:"/exampleArticle",
     element:<ExampleArticle/>
 
   },
-    {path: "favoris",
+    {path: "/favoris",
     element: <FavorisPage/>,
   },
   {
-    path: "readMoreeLink",
+    path: "/readMoreeLink",
     element: <ReadMorePage/>,
   },
 
@@ -67,5 +69,10 @@ const router = createBrowserRouter([
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <RouterProvider router={router} />
+  <AuthContextProvider> 
+    <RouterProvider router={router}>
+      <App />
+    </RouterProvider>
+  </AuthContextProvider>
 );
+

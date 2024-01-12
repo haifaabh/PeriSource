@@ -11,3 +11,5 @@ class Article(models.Model):
     texte_integral = models.TextField()
     url_pdf = models.TextField()
     references_bibliographiques = models.TextField()
+    validated = models.BooleanField(default=False)
+    date = models.DateField(null=True, blank=True)
