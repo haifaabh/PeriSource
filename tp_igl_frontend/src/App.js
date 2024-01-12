@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 
 function App() {
   return (
+    
     <div className="App">
       <h1 className="font-bold text-center">Pages</h1>
        <ul>

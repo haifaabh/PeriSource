@@ -1,9 +1,10 @@
+from datetime import date
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.http import JsonResponse
+from elasticsearch import NotFoundError
 from elasticsearch_dsl import connections
 from ArticleStock import extract_title
-
 from ArticleStock.extract_infos import extract_clean_text_from_pdf, extract_information
 from ArticleStock.extract_references import extract_reference_section, extract_references_as_list
 from .models import Article
@@ -20,6 +21,7 @@ import requests
 from django.shortcuts import get_object_or_404
 import json
 import re
+
 
 @api_view(['GET'])
 def say_hello(request):
@@ -58,13 +60,35 @@ def retrieve_all_data(request):
 
     # Execute the search and retrieve the results
     response = s.execute()
-    
-    # Use the serializer to convert hits into serialized data
-    serializer = ArticleSerializer(response.hits, many=True)
-    serialized_data = serializer.data
-    
+
+    # Extract IDs and serialize data
+    serialized_data = []
+    for hit in response.hits:
+        article_data = ArticleSerializer(hit).data
+        article_data['id'] = hit.meta.id
+        serialized_data.append(article_data)
+
     return Response({'results': serialized_data})
 
+
+
+@api_view(['GET'])
+def retrieve_validated_data(request):
+    # Retrieve data from Elasticsearch where validated is True
+    s = Search(index='articles_igl').query('bool', filter=Q('term', validated=True))
+    s = s.extra(size=1000)  # Change 1000 to the desired number of hits
+
+    # Execute the search and retrieve the results
+    response = s.execute()
+
+    # Extract IDs and serialize data
+    serialized_data = []
+    for hit in response.hits:
+        article_data = ArticleSerializer(hit).data
+        article_data['id'] = hit.meta.id
+        serialized_data.append(article_data)
+
+    return Response({'results': serialized_data})
 
 
 @api_view(['POST'])
@@ -127,7 +151,8 @@ def search_articles(request):
             for keyword in search_keywords:
                 should_clauses.append(Q('match', **{field: keyword}))
 
-        query = Q('bool', should=should_clauses)
+        query = Q('bool', should=should_clauses) & Q('term', validated=True)
+
 
         # Create a search instance
         s = Search(index='articles_igl').query(query)
@@ -184,10 +209,11 @@ def search_articles_by_field(request, field):
 
         # Construct a bool query with should clauses for the specified field
         should_clauses = [Q('match', **{field: keyword}) for keyword in search_keywords]
-        query = Q('bool', should=should_clauses)
+        query = Q('bool', should=should_clauses) & Q('term', validated=True)
+
 
         # Create a search instance
-        s = Search(index='mes_articles').query(query)
+        s = Search(index='articles_igl').query(query)
 
         # Execute the search and retrieve the results
         response = s.execute()
@@ -219,15 +245,18 @@ def upload(request):
     reference_section = extract_reference_section(text)
     references_list = extract_references_as_list(reference_section)
 
+    auteurs_list = [author.strip() for author in result.get("authors", "").split(", ") if author.strip()]
+    institutions_list = [institution.strip() for institution in result.get("institutions", "").split(", ") if institution.strip()]
+
     transformed_info = {
     "titre": title,
     "resume": result.get("abstract", None),
-    "auteurs": result.get("authors", "").split(", "), 
-    "institutions": result.get("institutions", "").split(", "),
+    "auteurs": auteurs_list,
+    "institutions": institutions_list,
     "mots_cles": result.get("keywords", "").split(", "),
     "texte_integral": result.get("introduction",None), 
     "url_pdf": url,
-    "references_bibliographiques": references_list
+    "references_bibliographiques": references_list,
     }
     serializer = ArticleSerializer(data=transformed_info)
     if serializer.is_valid():
@@ -240,3 +269,57 @@ def upload(request):
         return Response({'message': 'Article added successfully'})
     
     return Response({'error': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+# views.py
+
+
+
+@api_view(['PUT'])
+def update_article(request, article_id):
+   
+    article_document = ArticleDocument.get(id=article_id)
+
+    # Update the title
+    for key, value in request.data.items():
+            if key != 'url':
+                setattr(article_document, key, value)
+
+        # Set validated to True
+    article_document.validated = True
+    article_document.date = date.today()
+
+    # Reindex the updated document
+    article_document.save()
+
+# Example usage
+
+    return Response({'message': 'Article updated successfully'})
+    
+
+
+
+@api_view(['GET'])
+def retrieve_latest_validated_articles(request):
+    try:
+        # Create a search instance
+        s = Search(index='articles_igl').query(Q('match_all') & Q('term', validated=True))
+
+        # Sort by the 'date' field in descending order
+        s = s.sort('-date')
+
+        # Limit the number of results to four
+        s = s[:6]
+
+        # Execute the search and retrieve the results
+        response = s.execute()
+
+        # Extract IDs and serialize data
+        serialized_data = []
+        for hit in response.hits:
+            article_data = ArticleSerializer(hit).data
+            article_data['id'] = hit.meta.id
+            serialized_data.append(article_data)
+
+        return Response({'results': serialized_data})
+
+    except Exception as e:
+        return Response({'error': str(e)})
