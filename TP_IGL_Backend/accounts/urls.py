@@ -14,5 +14,5 @@ urlpatterns = [
   path('delete_moderator/<int:id>/', delete_moderator),
   path('users/<str:username>/', user_detail), 
   path('add_to_favorites/<str:username>/', add_article_to_favorites),
-  path('consulter_favories', consulter_favories),
+  path('consulter_favories/<str:username>/', consulter_favories),
 ]

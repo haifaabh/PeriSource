@@ -30,7 +30,7 @@ def extract_reference_section(text):
         last_reference_index = end + last_reference_match.start()
         extended_reference_section = text[end+1:last_reference_index]
         additional_lines = text[last_reference_index:].split('\n')[:4] 
-        result = f"{extended_reference_section}{'\n'.join(additional_lines)}"
+        result = f"{extended_reference_section}{' '.join(additional_lines)}"
         return result
     else:
         return "Reference section not found."
