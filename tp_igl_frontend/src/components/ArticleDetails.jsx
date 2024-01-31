@@ -1,16 +1,29 @@
 import React, { useState, useEffect } from 'react';
-const ArticleDetails = ({ articleInfo }) => {
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+
+
+const ArticleDetails = ({ articleInfo ,id}) => {
+  const articleId=useParams();
+// const articleId1= useParams();
+// const articleId=String(articleId1)
+  console.log("im in details",id);
+  console.log('articleId',articleId);
+
+  // const [id1,setID1]=useState("");
   const [articleData, setArticleData] = useState({
-    title: '',
-    abstract: '',
-    text: '',
-    authors: [],
+    titre:'',
+    resume:'',
+    texte_integral:'',
+    auteurs: [],
     institutions: [],
-    references: [],
-    keywords: [],
-    publishDate: '',
-    url: '',
+    references_bibliographiques: [],
+    mots_cles: [],
+    date: '',
+    url_pdf: '',
   });
+  console.log(articleData);
+// console.log("id is ",articleId);
 
   useEffect(() => {
     if (articleInfo) {
@@ -26,13 +39,33 @@ const ArticleDetails = ({ articleInfo }) => {
   };
   
   const handleViewButtonClick=()=>{
-    const url=articleData.url;
+    const url=articleData.url_pdf;
     if(url){
       window.open(url,'_blank');
       
     }
     else
     console.log('URL is empty')
+  };
+
+//const staticArticleId ="EiYS-4wBTrPMRMppYe2G"; // Replace this with the ID you want to test
+
+    const handleSaveButtonClick = async () => {
+      try {
+        const response = await axios.put(`http://localhost:8000/ArticleStock/modify_article/${id}/`, articleData);
+        console.log(response.data.message);
+      } catch (error) {
+        console.error('Error updating article:', error);
+      }
+  
+    // axios.get(`http://localhost:8000/ArticleStock/hello/`)
+    // .then(response => {
+    //   console.log(response.data);
+    // })
+    // .catch(error => {
+    //   console.error('Error updating article:', error);
+    // });
+    
   };
 
   return (
@@ -43,32 +76,32 @@ const ArticleDetails = ({ articleInfo }) => {
         <input
           type="text"
           className="w-full p-2 border rounded mt-2"
-          value={articleData.title}
-          onChange={(e) => handleInputChange('title', e.target.value)}
+          value={articleData.titre}
+          onChange={(e) => handleInputChange('titre', e.target.value)}
         />
       </div>
       <div className="mt-4">
         <label className="text-lg font-semibold">Abstract:</label>
         <textarea
           className="w-full p-2 border rounded mt-2 h-52"
-          value={articleData.abstract}
-          onChange={(e) => handleInputChange('abstract', e.target.value)}
+          value={articleData.resume}
+          onChange={(e) => handleInputChange('resume', e.target.value)}
         />
       </div>
       <div className="mt-4">
         <label className="text-lg font-semibold">Text of the Article:</label>
         <textarea
           className="w-full p-2 border rounded mt-2 h-60"
-          value={articleData.text}
-          onChange={(e) => handleInputChange('text', e.target.value)}
+          value={articleData.texte_integral}
+          onChange={(e) => handleInputChange('texte_integral', e.target.value)}
         />
       </div>
       <div className="mt-4">
         <label className="text-lg font-semibold">Authors:</label>
         <textarea
           className="w-full p-2 border rounded mt-2"
-          value={Array.isArray(articleData.authors) ? articleData.authors.join(', ') : ''}
-          onChange={(e) => handleInputChange('authors', e.target.value)}
+          value={Array.isArray(articleData.auteurs) ? articleData.auteurs.join(', ') : ''}
+          onChange={(e) => handleInputChange('auteurs', e.target.value)}
         />
       </div>
       <div className="mt-4">
@@ -83,16 +116,16 @@ const ArticleDetails = ({ articleInfo }) => {
         <label className="text-lg font-semibold">References:</label>
         <textarea
           className="w-full p-2 border rounded mt-2"
-          value={Array.isArray(articleData.references) ? articleData.references.join(', ') : ''}
-          onChange={(e) => handleInputChange('references', e.target.value)}
+          value={Array.isArray(articleData.references_bibliographiques) ? articleData.references_bibliographiques.join(', ') : ''}
+          onChange={(e) => handleInputChange('references_bibliographiques', e.target.value)}
         />
       </div>
       <div className="mt-4">
         <label className="text-lg font-semibold">Keywords:</label>
         <textarea
           className="w-full p-2 border rounded mt-2"
-          value={Array.isArray(articleData.keywords) ? articleData.keywords.join(', ') : ''}
-          onChange={(e) => handleInputChange('keywords', e.target.value)}
+          value={Array.isArray(articleData.mots_cles) ? articleData.mots_cles.join(', ') : ''}
+          onChange={(e) => handleInputChange('mots_cles', e.target.value)}
         />
       </div>
       <div className="mt-4">
@@ -100,8 +133,8 @@ const ArticleDetails = ({ articleInfo }) => {
         <input
           type="date"
           className="w-full p-2 border rounded mt-2"
-          value={articleData.publishDate}
-          onChange={(e) => handleInputChange('publishDate', e.target.value)}
+          value={articleData.date}
+          onChange={(e) => handleInputChange('date', e.target.value)}
         />
       </div>
       <div className="mt-4 flex justify-between">
@@ -109,15 +142,18 @@ const ArticleDetails = ({ articleInfo }) => {
         <input
           type="url"
           className="w-full p-2 border rounded mt-2"
-          value={articleData.url}
+          value={articleData.url_pdf}
         />
         <button className='bg-blue-500 text-white px-4 py-3 mt-4 rounded' onClick={handleViewButtonClick}>View</button>
       </div>
-
-      <button className="bg-blue-500 text-white px-4 py-2 mt-4 rounded" onClick={() => console.log('Save clicked', articleData)}>
+       <div className='flex justify-between mt-4'> 
+      <button className="bg-blue-500 text-white px-4 py-2 mt-4 rounded" onClick={handleSaveButtonClick}>
         Save
       </button>
-
+      <button className="bg-red-600 text-white px-4 py-2 mt-4 rounded" onClick={handleSaveButtonClick}>
+        delete
+      </button>
+      </div>
       </div>
     </div>
 

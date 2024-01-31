@@ -7,7 +7,7 @@ from .models import Article
 @registry.register_document
 class ArticleDocument(Document):
     class Index:
-        name = 'articles_igl'
+        name = 'tp_igl7'
         settings = {'number_of_shards': 1, 'number_of_replicas': 0}
 
     titre = fields.TextField()

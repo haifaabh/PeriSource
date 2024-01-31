@@ -48,14 +48,16 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'django_elasticsearch_dsl',
+    'corsheaders',
+
     
 
 ]
 
 MIDDLEWARE = [
+        'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'allauth.account.middleware.AccountMiddleware',
-
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -63,6 +65,24 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # or your React app's URL
+]
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+# CORS_ALLOW_HEADERS = [
+#     'access-control-allow-origin',
+#     'access-control-allow-credentials',
+#     'content-type',
+# ]
 
 ROOT_URLCONF = 'project.urls'
 
@@ -91,7 +111,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'users_accounts',
+        'NAME': 'haifa',
         'USER': 'root',
         'PASSWORD': 'M@iBAb@0uFsuU', 
         'HOST': '127.0.0.1',
