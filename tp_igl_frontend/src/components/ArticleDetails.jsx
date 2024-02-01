@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-
+import { useParams ,Link} from 'react-router-dom';
 
 const ArticleDetails = ({ articleInfo ,id}) => {
   const articleId=useParams();
-// const articleId1= useParams();
-// const articleId=String(articleId1)
+
   console.log("im in details",id);
   console.log('articleId',articleId);
-
-  // const [id1,setID1]=useState("");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [articleData, setArticleData] = useState({
     titre:'',
     resume:'',
@@ -23,7 +20,6 @@ const ArticleDetails = ({ articleInfo ,id}) => {
     url_pdf: '',
   });
   console.log(articleData);
-// console.log("id is ",articleId);
 
   useEffect(() => {
     if (articleInfo) {
@@ -48,25 +44,34 @@ const ArticleDetails = ({ articleInfo ,id}) => {
     console.log('URL is empty')
   };
 
-//const staticArticleId ="EiYS-4wBTrPMRMppYe2G"; // Replace this with the ID you want to test
 
     const handleSaveButtonClick = async () => {
       try {
         const response = await axios.put(`http://localhost:8000/ArticleStock/modify_article/${id}/`, articleData);
         console.log(response.data.message);
+        setShowSuccessModal(true);
+       
       } catch (error) {
         console.error('Error updating article:', error);
       }
-  
-    // axios.get(`http://localhost:8000/ArticleStock/hello/`)
-    // .then(response => {
-    //   console.log(response.data);
-    // })
-    // .catch(error => {
-    //   console.error('Error updating article:', error);
-    // });
+    };
+
+      const handleDeleteButtonClick = async () => {
+        try {
+          const response = await axios.delete(`http://localhost:8000/ArticleStock/delete_article/${id}/`);
+          console.log(response.data.message);
+          window.location.reload();
+        } catch (error) {
+          console.error('Error deleting article:', error);
+        }
+      };
     
-  };
+      const handleModalButtonClick = () => {
+        setShowSuccessModal(false);
+        // Redirect logic goes here
+        // You can use history.push('/your-redirect-url') if you have access to useHistory
+        // or use window.location.href = '/your-redirect-url'
+      };
 
   return (
     <div>
@@ -150,11 +155,27 @@ const ArticleDetails = ({ articleInfo ,id}) => {
       <button className="bg-blue-500 text-white px-4 py-2 mt-4 rounded" onClick={handleSaveButtonClick}>
         Save
       </button>
-      <button className="bg-red-600 text-white px-4 py-2 mt-4 rounded" onClick={handleSaveButtonClick}>
-        delete
+      <button className="bg-red-600 text-white px-4 py-2 mt-4 rounded" onClick={handleDeleteButtonClick}>
+      <Link to="/moderator" className="text-white">Delete</Link>
       </button>
       </div>
       </div>
+
+      {showSuccessModal && (
+  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-white p-8 rounded-md">
+      <p className="text-center text-lg font-bold mb-4">Article saved successfully!</p>
+      <button
+        className="ml-[80px] bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
+        onClick={handleModalButtonClick}
+      >
+       <Link to="/moderator" className="text-white">OK</Link>
+      </button>
+    </div>
+  </div>
+)}
+
+
     </div>
 
     

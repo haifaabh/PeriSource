@@ -225,6 +225,13 @@ def search_articles_by_field(request, field):
     except Exception as e:
         return Response({'success': False, 'error': str(e)})
     
+
+@api_view(['DELETE'])
+def delete_article(request, article_id):
+    article_document = ArticleDocument.get(id=article_id)
+    article_document.delete()
+    return Response({'message': 'Article deleted successfully'})
+
 @api_view(['POST'])
 def upload(request):
     if 'url' not in request.data:
