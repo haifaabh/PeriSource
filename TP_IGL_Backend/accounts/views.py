@@ -54,31 +54,39 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = CustomUserSerializer
     
     
-@api_view(['GET', 'POST'])
-@permission_classes([AllowAny]) 
-def user_detail(request, username):
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def retrieve_user(request, id):
     try:
-       user = CustomUser.objects.get(username=username, role=CustomUser.Role.User)
+        user = CustomUser.objects.get(id=id)
     except CustomUser.DoesNotExist:
-        return Response({"error": "Moderator not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    if request.method == 'GET':
-        serializer = CustomUserSerializer(user)
-        return Response(serializer.data)
+    serializer = CustomUserSerializer(user)
+    return Response(serializer.data)
 
-    elif request.method == 'POST':
-        
-            data = request.data
-            serializer = CustomUserSerializer(user, data=data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def update_user(request, id):
+    try:
+        user = CustomUser.objects.get(id=id)
+    except CustomUser.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'POST':
+        data = request.data
+        serializer = CustomUserSerializer(user, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET'])
 def get_moderators(request):
     if request.method == 'GET':
-        moderators = CustomUser.objects.filter(role='user')
+        moderators = CustomUser.objects.filter(role='moderator')
         serializer = CustomUserSerializer(moderators, many=True)
         return Response(serializer.data)
     
