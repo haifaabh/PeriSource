@@ -1,3 +1,4 @@
+import React from 'react'
 import { useEffect, useState } from 'react'
 import UploadArticles from './UploadArticles'
 
@@ -9,7 +10,7 @@ function BodyAdmin({ largeurEcran,UrlInputValue, handleUrlSubmit, handleUrlChang
     
 
     return (
-    <>
+    <div>
         {showUploadArticles && (<UploadArticles filesList={filesList} handleShowUploadArticles={handleShowUploadArticles}/>)}
         <div className="flex flex-col w-screen bg-bgblue shadow-md" style={{opacity:showUploadArticles? '0.4':'1',backdropFilter:showUploadArticles? 'blur(2px)':'none' }} >
             <div className='flex py-[50px] px-[101px] xl:px-[101px] lg:px-[80px] md:px-[40px] sm:px-[20px] max-[640px]:px-0' id="Top">
@@ -193,7 +194,7 @@ function BodyAdmin({ largeurEcran,UrlInputValue, handleUrlSubmit, handleUrlChang
                 </div>
             </div>
         </div>
-    </>
+    </div>
     
     )
 }

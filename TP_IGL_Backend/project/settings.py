@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'users_accounts',
+        'NAME': 'amin_db',
         'USER': 'root',
         'PASSWORD': 'M@iBAb@0uFsuU', 
         'HOST': '127.0.0.1',

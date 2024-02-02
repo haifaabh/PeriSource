@@ -1,3 +1,4 @@
+import React from 'react'
 import { useEffect, useState } from 'react'
 
 function HeaderAdmin({largeurEcran,handleUploadArticles,handleManageModeratore,showAddModeratorePage}){

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import BodyAdmin from '../components/BodyAdmin';
 import HeaderAdmin from '../components/HeaderAdmin';
@@ -85,12 +86,12 @@ function AdminPage() {
       };
 
       return (
-        <>
+        <div>
             <HeaderAdmin largeurEcran={largeurEcran} handleUploadArticles ={handleUploadArticles} handleManageModeratore={handleManageModeratore} showAddModeratorePage={showAddModeratorePage}/>
             {showAdminMainPage&&!showAddModeratorePage&& (<BodyAdmin largeurEcran={largeurEcran} UrlInputValue={urlInputValue} handleUrlSubmit={handleUrlSubmit} handleUrlChange={handleUrlChange} usersNumber={usersNumber} authorsNumber={authorsNumber} articlesNumber={articlesNumber} showInvalideUrl={showInvalideUrl} showUploadArticles={showUploadArticles} filesList={filesList} handleShowUploadArticles={handleShowUploadArticles}/>)}
             {!showAdminMainPage&&showAddModeratorePage&&(<ManageModerators largeurEcran={largeurEcran} moderatorsList={moderatorsList}/>)}
         
-        </>
+        </div>
       )
 
 

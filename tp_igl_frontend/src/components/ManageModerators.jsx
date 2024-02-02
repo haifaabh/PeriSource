@@ -1,3 +1,4 @@
+import React from 'react'
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import AddEditModerators from './AddEditModerators'
 
@@ -25,7 +26,7 @@ function ManageModerators({ largeurEcran, moderatorsList }) {
 
 
     return (
-        <>
+        <div>
             {(showAddModeratorsMenu||showEditModeratorsMenu) && (<AddEditModerators HandleExitAddModeratorMenu={HandleExitAddModeratorMenu} moderatorsList={moderatorsList} showAddModeratorsMenu={showAddModeratorsMenu} showEditModeratorsMenu={showEditModeratorsMenu} moderatorId={ModeratorId} />)}
             <div className="  items-center flex flex-col w-screen bg-bgblue shadow-md px-[110px] py-[45px] max-[990px]:px-[70px] max-[920px]:px-[50px] max-[700px]:px-[20px] max-[500px]:px-0  "  style={{opacity:(showAddModeratorsMenu||showEditModeratorsMenu) ? '0.4':'1',backdropFilter:(showAddModeratorsMenu||showEditModeratorsMenu) ? 'blur(2px)':'none' }}>
                 <div id='Top' className='bg-white relative flex flex-col w-full justify-center items-center rounded-lg border border-solid border-blue-300 border-opacity-40 p-4 max-[500px]:rounded-0'>
@@ -69,7 +70,7 @@ function ManageModerators({ largeurEcran, moderatorsList }) {
                 </div>
 
             </div>
-        </>
+        </div>
     )
 
 }

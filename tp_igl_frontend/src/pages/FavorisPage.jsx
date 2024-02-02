@@ -2,8 +2,9 @@ import React from 'react'
 import { NavbarUser } from '../components/NavbarUser'
 import { NavbarFavoris } from '../components/NavbarFavoris'
 import Footer from '../components/Footer'
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+/*import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';*/ 
+//import 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.css'
 import { ArticleScientifique } from '../components/ArticleScientifique';
 import Slider from 'react-slick';
 
