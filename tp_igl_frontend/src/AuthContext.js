@@ -1,33 +1,41 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [userId, setUserId] = useState(null);
-  const [article, setArticle] = useState();
-
-  const [userData, setUserData] = useState({
-    userId: null,
-    role: null,
-    
+  const [article, setArticle] = useState(() => {
+    const storedData = JSON.parse(localStorage.getItem('authData'));
+    return storedData ? storedData.article : null;
+  });
+  const [userId, setUserId] = useState(() => {
+    const storedData = JSON.parse(localStorage.getItem('authData'));
+    return storedData ? storedData.userId : null;
   });
 
-  const setAuthenticatedUser = (data) => {
-    setUserData(data);
-    
+  const setAuthenticatedUser = (userId) => {
+    setUserId(userId);
+    localStorage.setItem('authData', JSON.stringify({ userId, article }));
   };
 
-  const setArticleCh = (data) => {
-    setArticle(data);
+  const setArticleCh = (article) => {
+    setArticle(article);
+    localStorage.setItem('authData', JSON.stringify({ userId, article }));
   };
-
 
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem('authData')) || {};
-    setUserId(storedData.userId || null);
-    setUserData(storedData.userData || { userId: null, role: null });
-    
-    setArticle(storedData.article !== undefined && storedData.article !== null ? storedData.article : { articleCh: {} });
+    const handleStorageChange = (event) => {
+      if (event.key === 'authData') {
+        const storedData = JSON.parse(event.newValue);
+        setUserId(storedData.userId);
+        setArticle(storedData.article);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   return (
@@ -40,4 +48,3 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   return useContext(AuthContext);
 };
-

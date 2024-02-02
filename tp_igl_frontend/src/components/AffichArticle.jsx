@@ -11,6 +11,7 @@ export const AffichArticle = () => {
   const resumeWords = abstract.split(' ');
   const omittedResume = resumeWords.slice(1).join(' ');
 
+
   const contentWords = content.split(' ');
   const omittedContent = contentWords.slice(1).join(' ');
 
