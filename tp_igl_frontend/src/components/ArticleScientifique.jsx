@@ -1,5 +1,6 @@
 import React from 'react';
 import favoritIcon from '../assets/favoritIcon.svg'
+import IconDelete from '../assets/IconDelete.svg'
 import favoritAddedIcon from '../assets/favoritAddedIcon.svg'
 import { useState , useContext } from 'react';
 import heartIcon from '../assets/heartIcon.svg'
@@ -11,13 +12,18 @@ import { useAuth } from '../AuthContext';
 
 
 
-export const ArticleScientifique = ({ articleCh, onAddToFavorites, isFavoritesPage }) => {
-  const [isFavorite, setIsFavorite] = useState(isFavoritesPage);
+export const ArticleScientifique = ({ articleCh, onAddToFavorites,onRemoveFromFavorites, isFavoritesPage , isFavoriteArt }) => {
+  const [isFavorite, setIsFavorite] = useState(isFavoriteArt);
   const navigate = useNavigate();
   const { setArticleCh } = useAuth();
 
   const handleAddToFavorites = () => {
     onAddToFavorites();
+    setIsFavorite(!isFavorite);
+  };
+
+  const handleRemoveFromFavorites = () => {
+    onRemoveFromFavorites();
     setIsFavorite(!isFavorite);
   };
 
@@ -65,9 +71,13 @@ export const ArticleScientifique = ({ articleCh, onAddToFavorites, isFavoritesPa
       </a>
 
         {/* Add to Favorites Button */}
-        <button onClick={handleAddToFavorites} className="ml-2 bg-transparent text-[#3692FA] font-montserrat px-4 py-2 rounded-md">
-        <img src={isFavorite ? favoritAddedIcon : favoritIcon} alt="" className="w-full h-auto" />
-      </button>
+        <button onClick={isFavorite ? handleRemoveFromFavorites : handleAddToFavorites} className="ml-2 bg-transparent text-[#3692FA] font-montserrat px-4 py-2 rounded-md">
+        {isFavoritesPage ? (
+          <img src={IconDelete} alt="" className="w-full h-auto button-hover" />
+        ) : (
+          <img src={isFavorite ? favoritAddedIcon : favoritIcon} alt="" className="w-full h-auto" />
+          )}
+        </button>
     </div>
     </div>
     </div>

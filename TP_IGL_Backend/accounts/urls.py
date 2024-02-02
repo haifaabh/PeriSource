@@ -15,5 +15,5 @@ urlpatterns = [
   path('retrieve_user/<str:id>/', retrieve_user), 
   path('update_user/<str:id>/', update_user), 
   path('add_to_favorites/<str:username>/', add_article_to_favorites),
-  path('consulter_favories/<str:username>/', consulter_favories),
+   path('consulter_favories/<str:username>/', consulter_favories),
 ]

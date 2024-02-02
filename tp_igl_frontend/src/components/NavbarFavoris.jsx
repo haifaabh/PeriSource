@@ -5,10 +5,10 @@ import NameLogo from '../assets/NameLogo.svg'
 import logo from '../assets/logo.svg'
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { useAuth } from '../AuthContext';
 
 export const NavbarFavoris = () => {
-    const navigate = useNavigate();
+    const { setAuthenticatedUser } = useAuth(); 
     const [nav,setnav] = useState(true) ;
 
     const handlenav = () => {
@@ -20,6 +20,12 @@ export const NavbarFavoris = () => {
     const handleItemClick = (item) => {
         setSelectedItem(item);
       };
+
+      const handleSignOut = () => {
+        setAuthenticatedUser(null);
+        window.location.href = '/signin'; 
+      };
+    
 
     return (
         <div className='bg-white flex justify-between items-center h-24 w-screen mx-auto  text-[#4D4D4D] border-b-1.5 border-[#ABBED1] border-opacity-50 lg:px-24 px-4 navbarUser'>
@@ -56,7 +62,7 @@ export const NavbarFavoris = () => {
             </ul>
 
             <div className="hidden md:flex lg:ml-4">
-                <button className="lg:px-2 px-0 py-2 text-sm lg:text-base text-[#002366] font-montserrat font-semibold border border-[#002366] hover:bg-[#e0ebf6]">
+                <button onClick={handleSignOut} className="lg:px-2 px-0 py-2 text-sm lg:text-base text-[#002366] font-montserrat font-semibold border border-[#002366] hover:bg-[#e0ebf6]">
                     Sign Out   
                     <ExitToAppOutlinedIcon className='lg:ml-2 text-[#002366]'/>
                 </button>
