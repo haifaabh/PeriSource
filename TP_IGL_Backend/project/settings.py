@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -66,10 +67,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+
 ROOT_URLCONF = 'project.urls'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000", 
+    
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -123,9 +127,9 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test',
+        'NAME': 'amin_db',
         'USER': 'root',
-        'PASSWORD': 'salah', 
+        'PASSWORD': 'M@iBAb@0uFsuU', 
         'HOST': '127.0.0.1',
         'PORT': '3306',
         
