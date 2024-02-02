@@ -6,7 +6,7 @@ import axios from 'axios'
 function HeaderAdmin({ largeurEcran, handleUploadArticles, handleManageModeratore2, updatemoderatorsList, showAddModeratorePage }) {
     const WidthLimit1 = 1430
     const WidthLimit2 = 1180
-   
+    const [templist, setTemplist] = useState([])
     const handleManageModeratore = () => {
         if (!showAddModeratorePage) {
             handleManageModeratore2()
