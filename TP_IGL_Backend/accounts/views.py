@@ -122,6 +122,40 @@ def add_article_to_favorites(request, username):
     user_serializer = CustomUserSerializer(user)
     return Response(user_serializer.data, status=status.HTTP_200_OK)
 
+
+@api_view(['POST'])
+def remove_article_from_favorites(request, username):
+    try:
+        user = CustomUser.objects.get(username=username,role=CustomUser.Role.User)
+    except CustomUser.DoesNotExist:
+        return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    article_id = request.data.get('article_id')
+    if not article_id:
+        return Response({"detail": "article_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    if article_id in user.favorites:
+        user.favorites.remove(article_id)
+        user.save()
+
+    user_serializer = CustomUserSerializer(user)
+    return Response(user_serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def consulter_favories(request, username):
+    try:
+        user = CustomUser.objects.get(username=username, role=CustomUser.Role.User)
+    except CustomUser.DoesNotExist:
+        return Response({"detail": "User not found or not of the required role"}, status=status.HTTP_404_NOT_FOUND)
+
+    article_ids = user.favorites
+    response_data = {
+        "article_ids": article_ids,
+    }
+
+    return Response(response_data, status=status.HTTP_200_OK)
+
 @api_view(['GET'])
 def consulter_favories(request, username):
     try:

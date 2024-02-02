@@ -1,48 +1,83 @@
 import React from 'react'
-import { NavbarUser } from '../components/NavbarUser'
 import { NavbarFavoris } from '../components/NavbarFavoris'
 import Footer from '../components/Footer'
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { ArticleScientifique } from '../components/ArticleScientifique';
-import Slider from 'react-slick';
+import { useAuth } from '../AuthContext';
+import { useEffect, useState , useContext } from 'react';
+import axios from 'axios';
 
 
 export const FavorisPage = () => {
-  const articles = [
-    {
-    title: 'Title 1',
-    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    readMoreLink: 'https://example.com/article1',
-    pdfLink: 'https://example.com/article1.pdf',
-    },
-    {
-        title: 'Title 2',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        readMoreLink: 'https://example.com/article1',
-        pdfLink: 'https://example.com/article1.pdf',
-    },
-    {
-        title: 'Title 3',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        readMoreLink: 'https://example.com/article1',
-        pdfLink: 'https://example.com/article1.pdf',
-    },
-    {
-        title: 'Title 4',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        readMoreLink: 'https://example.com/article1',
-        pdfLink: 'https://example.com/article1.pdf',
-    },
-    {
-        title: 'Title 5',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        readMoreLink: 'https://example.com/article1',
-        pdfLink: 'https://example.com/article1.pdf',
-    },
-];
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { userId } = useAuth();
+  const [userFavorites, setUserFavorites] = useState([]);
 
-  const handleAddToFavorites = (index) => {
+    const fetchData = async () => {
+      try {
+        const articlesResponse = axios.get('http://localhost:8000/ArticleStock/have/');
+        const userFavoritesResponse = axios.get(`http://localhost:8000/consulter_favories/${userId.username}/`);
+        
+        const [articlesRes, userFavoritesRes] = await Promise.all([articlesResponse, userFavoritesResponse]);
+        
+        console.log('API Response:', articlesRes.data);
+        const articlesArray = Array.isArray(articlesRes.data.results) ? articlesRes.data.results : [];
+        setArticles(articlesArray);
+        
+        console.log('User favoritess:', userFavoritesRes.data);
+        let favoriteArticleIds = null;
+        if (Array.isArray(userFavoritesRes.data.article_ids)) {
+          console.log("hereee1")
+          favoriteArticleIds = userFavoritesRes.data.article_ids;
+          setUserFavorites(favoriteArticleIds);
+          console.log("favvv",favoriteArticleIds);
+        } else {
+          console.error('Invalid response data format: article_ids is not an array');
+        }
+        
+        const filteredArticles = articlesArray.filter(article => favoriteArticleIds.includes(article.id));
+        setArticles(filteredArticles);
+        console.log("artiafff",filteredArticles);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError('Error fetching data. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    useEffect(() => {
+      fetchData();
+    }, [userId]); 
+    
+  const isArticleInFavorites = (articleId) => userFavorites.includes(articleId);
+
+  const handleAddToFavorites = async (articleId) => {
+    try {
+      const username = userId.username; 
+      const response = await axios.post(`http://localhost:8000/add_to_favorites/${username}/`, {
+        article_id: articleId
+      });
+      console.log('Article added to favorites:', response.data);
+    } catch (error) {
+      console.error('Error adding article to favorites:', error);
+    }
+  };
+
+  const handleRemoveFromFavorites = async (articleId) => {
+    try {
+      const username = userId.username; 
+      const response = await axios.post(`http://localhost:8000/remove_from_favorites/${username}/`, {
+        article_id: articleId
+      });
+      console.log('Article removed from favorites:', response.data);
+      fetchData();
+    } catch (error) {
+      console.error('Error removing article from favorites:', error);
+    }
   };
 
   return (
@@ -56,12 +91,11 @@ export const FavorisPage = () => {
           {articles.map((article, index) => (
             <div key={index}>
               <ArticleScientifique
-                title={article.title}
-                content={article.content}
-                readMoreLink={article.readMoreLink}
-                pdfLink={article.pdfLink}
-                onAddToFavorites={() => handleAddToFavorites(index)}
-                isFavoritesPage={true}
+                 articleCh={article} 
+                 onAddToFavorites={() => handleAddToFavorites(article.id)}
+                 onRemoveFromFavorites={() => handleRemoveFromFavorites(article.id)}
+                 isFavoritesPage={true}
+                 isFavoriteArt={isArticleInFavorites(article.id)}
               />
             </div>
           ))}

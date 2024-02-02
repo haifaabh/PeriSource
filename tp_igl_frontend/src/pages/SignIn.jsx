@@ -9,13 +9,14 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { jwtDecode } from 'jwt-decode';
 import { useAuth } from '../AuthContext';
+import { useEffect } from 'react';
 
 
 function SignIn() {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const navigate = useNavigate();
-  const { setAuthenticatedUser } = useAuth();
+  const { setAuthenticatedUser} = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,12 +37,12 @@ function SignIn() {
        const userId = decodedToken.user_id;
        const role = decodedToken.role;
 
+
       setAuthenticatedUser({
         userId, 
         role,
+        username,
       });
- 
-      console.log('Id and role',userId,role);
 
        console.log('Login successful:', refresh);
 
