@@ -1,11 +1,19 @@
+<<<<<<< HEAD
 from datetime import date
+=======
+import os
+>>>>>>> haifaa
 from django.shortcuts import render
 from django.http import Http404, HttpResponse
 from django.http import JsonResponse
 from elasticsearch import NotFoundError
 from elasticsearch_dsl import connections
 from ArticleStock import extract_title
+<<<<<<< HEAD
 from ArticleStock.extract_infos import extract_clean_text_from_pdf, extract_information
+=======
+from ArticleStock.extract_infos import extract_clean_text_from_pdf, extract_clean_text_from_pdf2, extract_information
+>>>>>>> haifaa
 from ArticleStock.extract_references import extract_reference_section, extract_references_as_list
 from .models import Article
 from django.http import JsonResponse
@@ -55,7 +63,7 @@ def add_article(request):
 @api_view(['GET'])
 def retrieve_all_data(request):
     # Retrieve all data from Elasticsearch
-    s = Search(index='articles_igl').query('match_all')
+    s = Search(index='tp_igl7').query('match_all')
     s = s.extra(size=1000)  # Change 1000 to the desired number of hits
 
     # Execute the search and retrieve the results
@@ -75,7 +83,11 @@ def retrieve_all_data(request):
 @api_view(['GET'])
 def retrieve_validated_data(request):
     # Retrieve data from Elasticsearch where validated is True
+<<<<<<< HEAD
     s = Search(index='articles_igl').query('bool', filter=Q('term', validated=True))
+=======
+    s = Search(index='tp_igl7').query('bool', filter=Q('term', validated=True))
+>>>>>>> haifaa
     s = s.extra(size=1000)  # Change 1000 to the desired number of hits
 
     # Execute the search and retrieve the results
@@ -155,7 +167,7 @@ def search_articles(request):
 
 
         # Create a search instance
-        s = Search(index='articles_igl').query(query)
+        s = Search(index='tp_igl7').query(query)
 
         # Execute the search and retrieve the results
         response = s.execute()
@@ -213,7 +225,11 @@ def search_articles_by_field(request, field):
 
 
         # Create a search instance
+<<<<<<< HEAD
         s = Search(index='articles_igl').query(query)
+=======
+        s = Search(index='tp_igl7').query(query)
+>>>>>>> haifaa
 
         # Execute the search and retrieve the results
         response = s.execute()
@@ -226,17 +242,26 @@ def search_articles_by_field(request, field):
     except Exception as e:
         return Response({'success': False, 'error': str(e)})
     
+
+@api_view(['DELETE'])
+def delete_article(request, article_id):
+    article_document = ArticleDocument.get(id=article_id)
+    article_document.delete()
+    return Response({'message': 'Article deleted successfully'})
+
 @api_view(['POST'])
 def upload(request):
     if 'url' not in request.data:
         return Response({'error': 'URL is required in the POST data'}, status=status.HTTP_400_BAD_REQUEST)
 
     url = request.data['url']
-    title = extract_title.pdf_title_from_drive(url)
+    # title = extract_title.pdf_title_from_drive(url)
+
+    title = extract_title.pdf_title(url)
     title = extract_title.sanitize(' '.join(title.split()))
 
 
-    article_text = extract_clean_text_from_pdf(url)
+    article_text = extract_clean_text_from_pdf2(url)
     text=article_text
     result = extract_information(article_text)
 
@@ -280,12 +305,18 @@ def update_article(request, article_id):
 
     # Update the title
     for key, value in request.data.items():
+<<<<<<< HEAD
             if key != 'url':
+=======
+>>>>>>> haifaa
                 setattr(article_document, key, value)
 
         # Set validated to True
     article_document.validated = True
+<<<<<<< HEAD
     article_document.date = date.today()
+=======
+>>>>>>> haifaa
 
     # Reindex the updated document
     article_document.save()
@@ -301,13 +332,21 @@ def update_article(request, article_id):
 def retrieve_latest_validated_articles(request):
     try:
         # Create a search instance
+<<<<<<< HEAD
         s = Search(index='articles_igl').query(Q('match_all') & Q('term', validated=True))
+=======
+        s = Search(index='tp_igl7').query(Q('match_all') & Q('term', validated=True))
+>>>>>>> haifaa
 
         # Sort by the 'date' field in descending order
         s = s.sort('-date')
 
         # Limit the number of results to four
+<<<<<<< HEAD
         s = s[:6]
+=======
+        s = s[:4]
+>>>>>>> haifaa
 
         # Execute the search and retrieve the results
         response = s.execute()
@@ -324,8 +363,30 @@ def retrieve_latest_validated_articles(request):
     except Exception as e:
         return Response({'error': str(e)})
     
+<<<<<<< HEAD
 @api_view(['DELETE'])
 def delete_article(request, article_id):
     article_document = ArticleDocument.get(id=article_id)
     article_document.delete()
     return Response({'message': 'Article deleted successfully'})
+=======
+
+@api_view(['POST'])
+def get_pdf_paths(request):
+    if 'url' not in request.data:
+        return Response({'error': 'URL is required in the POST data'}, status=status.HTTP_400_BAD_REQUEST)
+
+    directory_path = request.data['url']
+    if not os.path.exists(directory_path):
+        return Response({'error': 'Invalid directory path'})
+
+    pdf_paths = []
+
+    # Walk through the directory and find PDF files
+    for root, dirs, files in os.walk(directory_path):
+        for file in files:
+            if file.lower().endswith('.pdf'):
+                pdf_paths.append(os.path.join(root, file))
+
+    return Response({'pdf_paths': pdf_paths})
+>>>>>>> haifaa

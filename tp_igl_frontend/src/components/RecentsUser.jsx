@@ -2,34 +2,54 @@ import React, { useEffect, useState , useContext } from 'react';
 import axios from 'axios';
 import Slider from 'react-slick';
 import { ArticleScientifique } from './ArticleScientifique';
-import { ArticleContext } from '../ArticleContext';
+import { useAuth } from '../AuthContext';
+
 
 export const RecentsUser = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { userId } = useAuth();
+  const [userFavorites, setUserFavorites] = useState([]);
 
-
-  useEffect(() => {
-    const fetchArticles = async () => {
+  const fetchArticles = async () => {
+    try {
+      console.log(':', userId);
+      const response = await axios.get('http://localhost:8000/ArticleStock/recent/');
+      console.log('API Response:', response.data);
+      const articlesArray = Array.isArray(response.data.results) ? response.data.results : [];
+      setArticles(articlesArray);
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+      setError('Error fetching articles. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchUserFavorites = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/ArticleStock/recent/');
-        console.log('API Response:', response.data);
-        const articlesArray = Array.isArray(response.data.results) ? response.data.results : [];
-        setArticles(articlesArray);
+        const username = userId.username; 
+        console.log(':usernam', username);
+        const response = await axios.get(`http://localhost:8000/consulter_favories/${username}/`);
+        console.log('User favorites:', response.data);
+        if (Array.isArray(response.data.article_ids)) {
+          const favoriteArticleIds = response.data.article_ids;
+          setUserFavorites(favoriteArticleIds);
+        } else {
+          console.error('Invalid response data format: article_ids is not an array');
+        }
       } catch (error) {
-        console.error('Error fetching articles:', error);
-        setError('Error fetching articles. Please try again later.');
-      } finally {
-        setLoading(false);
+        console.error('Error fetching user favorites:', error);
       }
     };
 
+  useEffect(() => {
     fetchArticles();
+    fetchUserFavorites();
   }, []);
 
-
-  
+  const isArticleInFavorites = (articleId) => userFavorites.includes(articleId);
+    
 
   const sliderSettings = {
     dots: true,
@@ -51,8 +71,28 @@ export const RecentsUser = () => {
     ],
   };
 
-  const handleAddToFavorites = (index) => {
-    console.log('Adding to favorites:', articles[index]);
+  const handleAddToFavorites = async (articleId) => {
+    try {
+      const username = userId.username; 
+      const response = await axios.post(`http://localhost:8000/add_to_favorites/${username}/`, {
+        article_id: articleId
+      });
+      console.log('Article added to favorites:', response.data);
+    } catch (error) {
+      console.error('Error adding article to favorites:', error);
+    }
+  };
+
+  const handleRemoveFromFavorites = async (articleId) => {
+    try {
+      const username = userId.username; 
+      const response = await axios.post(`http://localhost:8000/remove_from_favorites/${username}/`, {
+        article_id: articleId
+      });
+      console.log('Article removed from favorites:', response.data);
+    } catch (error) {
+      console.error('Error removing article from favorites:', error);
+    }
   };
 
   return (
@@ -69,8 +109,10 @@ export const RecentsUser = () => {
               <div key={index}>
                 <ArticleScientifique  
                   articleCh={article} 
-                  onAddToFavorites={() => handleAddToFavorites(index)}
+                  onAddToFavorites={() => handleAddToFavorites(article.id)}
+                  onRemoveFromFavorites={() => handleRemoveFromFavorites(article.id)}
                   isFavoritesPage={false}
+                  isFavoriteArt={isArticleInFavorites(article.id)}
                 />
               </div>
             ))}

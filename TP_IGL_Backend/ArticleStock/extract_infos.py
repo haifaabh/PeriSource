@@ -47,7 +47,7 @@ def extract_information(article_text):
     
 
     nlp_en = spacy.load("en_core_web_lg")
-    nlp_fr = spacy.load("fr_core_news_lg")
+    # nlp_fr = spacy.load("fr_core_news_lg")
     section_headers = ["abstract", "keywords", "introduction", "references","index terms"]
 
     pattern = re.compile(fr'({"|".join(re.escape(header) for header in section_headers)})', re.IGNORECASE)
@@ -79,15 +79,15 @@ def extract_information(article_text):
     institutions_en = [ent.text for ent in doc_en.ents if ent.label_ == "ORG"]
     extracted_info["institutions"] = ", ".join(institutions_en)
 
-    doc_fr = nlp_fr(search_area)
+    # doc_fr = nlp_fr(search_area)
 
     # Extract authors in French
-    authors_fr = [ent.text for ent in doc_fr.ents if ent.label_ == "PERSON"]
-    extracted_info["authors"] += ", " + ", ".join(authors_fr)
+    # authors_fr = [ent.text for ent in doc_fr.ents if ent.label_ == "PERSON"]
+    # extracted_info["authors"] += ", " + ", ".join(authors_fr)
 
-    # Extract institutions in French
-    institutions_fr = [ent.text for ent in doc_fr.ents if ent.label_ == "ORG"]
-    extracted_info["institutions"] += ", " + ", ".join(institutions_fr)
+    # # Extract institutions in French
+    # institutions_fr = [ent.text for ent in doc_fr.ents if ent.label_ == "ORG"]
+    # extracted_info["institutions"] += ", " + ", ".join(institutions_fr)
 
 
     

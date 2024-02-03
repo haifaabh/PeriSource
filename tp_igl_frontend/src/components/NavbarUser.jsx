@@ -4,10 +4,11 @@ import {AiOutlineClose, AiOutlineMenu} from 'react-icons/ai'
 import NameLogo from '../assets/NameLogo.svg'
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 
 
 export const NavbarUser = () => {
-    const navigate = useNavigate();
+    const { setAuthenticatedUser } = useAuth(); 
     const [nav,setnav] = useState(true) ;
 
     const handlenav = () => {
@@ -16,6 +17,12 @@ export const NavbarUser = () => {
     };
 
     const [selectedItem, setSelectedItem] = useState('Home');
+
+    const handleSignOut = () => {
+        setAuthenticatedUser(null);
+        window.location.href = '/signin'; 
+      };
+    
 
     const handleItemClick = (item) => {
         setSelectedItem(item);
@@ -64,7 +71,7 @@ export const NavbarUser = () => {
             </ul>
 
             <div className="hidden md:flex lg:ml-4">
-                <button className="lg:px-2 px-0 py-2 text-sm lg:text-base text-[#002366] font-montserrat font-semibold border border-[#002366] hover:bg-[#e0ebf6]">
+                <button onClick={handleSignOut} className="lg:px-2 px-0 py-2 text-sm lg:text-base text-[#002366] font-montserrat font-semibold border border-[#002366] hover:bg-[#e0ebf6]">
                     Sign Out   
                     <ExitToAppOutlinedIcon className='lg:ml-2 text-[#002366]'/>
                 </button>

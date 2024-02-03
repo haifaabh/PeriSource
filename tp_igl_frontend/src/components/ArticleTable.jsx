@@ -1,18 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const ArticleTable = () => {
-  // Dummy data for articles
-  const articles = [
-    { id: 1, title: 'Article 1' },
-    { id: 2, title: 'Article 2' },
-    { id: 3, title: 'Article 3' },
-    { id: 4, title: 'Article 4' },
-    { id: 5, title: 'Article 5' },
-    { id: 6, title: 'Article 6' },
-    { id: 7, title: 'Article 7' },
-    { id: 8, title: 'Article 8' },
-    // Add more articles as needed
-  ];
+  const [articleTitles, setArticleTitles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/ArticleStock/affichage_mod_adm/');
+        const titles = response.data.results.map((article) => ({
+          id: article.id,
+          title: article.titre,
+        }));
+        setArticleTitles(titles);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError('An error occurred while fetching data.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Call the fetch function
+    fetchData();
+  }, []); 
 
   return (
     <div className='flex flex-col lg:flex-row justify-between bg-white m-8 rounded-xl pb-5'>
@@ -24,13 +38,17 @@ const ArticleTable = () => {
             </tr>
           </thead>
           <tbody>
-            {articles.map((article) => (
-              <tr key={article.id}>
+            {articleTitles.map((article, index) => (
+              <tr key={index}>
                 <td className='font-roboto'>{article.title}</td>
                 <td className='flex justify-center items-center mb-4'>
-                  <button className=' text-[#002366] font-semibold lg:px-8 md:px-6 sm:px-5 py-1.5 rounded-full border border-white shadow drop-shadow-sm'>
-                    Read More
-                  </button>
+                  <Link to={`/exampleArticle/${article.id}`}>
+                    <button
+                      className='text-[#002366] font-semibold lg:px-8 md:px-6 sm:px-5 py-1.5 rounded-full border border-white shadow drop-shadow-sm'
+                    >
+                      Read More
+                    </button>
+                  </Link>
                 </td>
               </tr>
             ))}

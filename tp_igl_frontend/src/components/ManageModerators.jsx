@@ -1,10 +1,15 @@
+import React from 'react'
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import AddEditModerators from './AddEditModerators'
+import axios from 'axios'
+import '../index.css'
 
-function ManageModerators({ largeurEcran, moderatorsList }) {
+function ManageModerators({ largeurEcran, moderatorsList,updateNewModeratorAdded })  {
     const [showAddModeratorsMenu, setShowAddModeratorsMenu] = useState(false)
     const [showEditModeratorsMenu, setShowEditModeratorsMenu] = useState(false)
     const [ModeratorId,setModeratorId]=useState(0)
+    const [ModeratorNotDeleted,setModeratorNotDeleted]=useState(false)
+
 
     const HandleEditModerator=(id)=>{
         setShowEditModeratorsMenu(true)
@@ -14,19 +19,35 @@ function ManageModerators({ largeurEcran, moderatorsList }) {
     const HandleAddModerator=()=>{
         setShowAddModeratorsMenu(true)
     }
+
     const HandleExitAddModeratorMenu=()=>{
         if(showAddModeratorsMenu){setShowAddModeratorsMenu(false)}
         else{
             if(showEditModeratorsMenu){setShowEditModeratorsMenu(false)}
         
+        }    
+    }
+    const HandleDeleteModerator = async (id)=>{
+        try {
+            const response = await axios.delete(`http://127.0.0.1:8000/delete_moderator/${id}/`);
+            console.log('Réponse de la requête :', response.data);
+            updateNewModeratorAdded()
+            setModeratorNotDeleted(false)
+        } catch (error) {
+            setModeratorNotDeleted(true)
         }
-        
+
     }
 
 
+
+
+
+
     return (
-        <>
-            {(showAddModeratorsMenu||showEditModeratorsMenu) && (<AddEditModerators HandleExitAddModeratorMenu={HandleExitAddModeratorMenu} moderatorsList={moderatorsList} showAddModeratorsMenu={showAddModeratorsMenu} showEditModeratorsMenu={showEditModeratorsMenu} moderatorId={ModeratorId} />)}
+        <div>
+            {(showAddModeratorsMenu||showEditModeratorsMenu) && (<AddEditModerators HandleExitAddModeratorMenu={HandleExitAddModeratorMenu} moderatorsList={moderatorsList} showAddModeratorsMenu={showAddModeratorsMenu} showEditModeratorsMenu={showEditModeratorsMenu} moderatorId={ModeratorId} updateNewModeratorAdded={updateNewModeratorAdded} />)}
+            {ModeratorNotDeleted&&(<div className='text-red-500 text-center mb-[2px] font-roboto text-[15px] z-10 ml-[10px]'>The moderator has not been deleted, please try again.</div>)}
             <div className="  items-center flex flex-col w-screen bg-bgblue shadow-md px-[110px] py-[45px] max-[990px]:px-[70px] max-[920px]:px-[50px] max-[700px]:px-[20px] max-[500px]:px-0  "  style={{opacity:(showAddModeratorsMenu||showEditModeratorsMenu) ? '0.4':'1',backdropFilter:(showAddModeratorsMenu||showEditModeratorsMenu) ? 'blur(2px)':'none' }}>
                 <div id='Top' className='bg-white relative flex flex-col w-full justify-center items-center rounded-lg border border-solid border-blue-300 border-opacity-40 p-4 max-[500px]:rounded-0'>
                     <p className="text-blue-900 font-montserrat text-3xl font-bold max-[600px]:text-2xl max-[500px]:text-xl ">Welcome to Moderator Management</p>
@@ -41,24 +62,23 @@ function ManageModerators({ largeurEcran, moderatorsList }) {
                 </div>
                 <div id='Moderators table' className='w-full h-[450px] px-[20px] py-[12px] mt-[70px] bg-white rounded-lg border border-solid border-custom mb-0 max-[500px]:rounded-0'>
                     <div id='list Header' className='w-full h-[54px] px-[12px]  py-[18px] flex gap-[30px] border-b border-solid border-custom'>
-                        <p className="text-Primary font-Roboto text-base font-medium leading-6 w-[140px] max-[1220px]:w-[100px]  max-[1130px]:w-[70px] ">ID</p>
-                        <p className="text-Primary font-Roboto text-base font-medium leading-6 w-[140px] max-[630px]:w-[500px] ">UserName</p>
-                        <p className="text-Primary font-Roboto text-base font-medium leading-6 w-[140px] max-[1160px]:w-[100px] max-[890px]:hidden">Name</p>
-                        <p className="text-Primary font-Roboto text-base font-medium leading-6 w-[140px]  max-[1160px]:w-[100px] max-[890px]:hidden">Surname</p>
+                        <p className="text-Primary font-Roboto text-base font-medium leading-6 w-[170px] max-[1220px]:w-[100px]  max-[1130px]:w-[70px] ">ID</p>
+                        <p className="text-Primary font-Roboto text-base font-medium leading-6 w-[170px] max-[630px]:w-[500px] ">UserName</p>
+                        <p className="text-Primary font-Roboto text-base font-medium leading-6 w-[170px] max-[1160px]:w-[100px] max-[890px]:hidden">Name</p>
                         <p className="text-Primary font-Roboto text-base font-medium leading-6 w-[515px] max-[630px]:hidden">Email</p>
                     </div>
                     <div className='w-full h-[380px] overflow-x-hidden overflow-y-auto scrollbar'>
                         {moderatorsList.map((modertor,key) => (
                             <div key={key+1} className='relative w-full h-[54px] px-[12px] py-[18px]  flex gap-[30px] border-b border-solid border-custom'>
-                                <p className="text-Primary font-Roboto text-base font-medium leading-6 w-[140px] max-[1220px]:w-[100px]  max-[1130px]:w-[70px] ">{modertor.id}</p>
-                                <p className="text-Primary font-Roboto text-base font-medium leading-6 w-[140px] h-[35px] overflow-y-hidden overflow-x-auto scrollbar max-[630px]:w-[250px] ">{modertor.userName}</p>
-                                <p className="text-Primary font-Roboto text-base font-medium leading-6 w-[140px] h-[35px] max-[1160px]:w-[100px] overflow-y-hidden overflow-x-auto scrollbar max-[890px]:hidden ">{modertor.name}</p>
-                                <p className="text-Primary font-Roboto text-base font-medium leading-6 w-[140px] h-[35px] max-[1160px]:w-[100px] overflow-y-hidden overflow-x-auto scrollbar max-[890px]:hidden">{modertor.surname}</p>
+                                <p className="text-Primary font-Roboto text-base font-medium leading-6 w-[170px] max-[1220px]:w-[100px]  max-[1130px]:w-[70px] ">{modertor.id}</p>
+                                <p className="text-Primary font-Roboto text-base font-medium leading-6 w-[170px] h-[35px] overflow-y-hidden overflow-x-auto scrollbar max-[630px]:w-[250px] ">{modertor.username}</p>
+                                <p className="text-Primary font-Roboto text-base font-medium leading-6 w-[170px] h-[35px] max-[1160px]:w-[100px] overflow-y-hidden overflow-x-auto scrollbar max-[890px]:hidden ">{modertor.name}</p>
+                               
                                 <div className='relative w-[500px] flex flex-row items-center p-0 max-[630px]:w-[150px]'>
                                     <p className="text-Primary font-Roboto text-base font-medium leading-6 w-[300px] overflow-y-hidden overflow-x-auto scrollbar max-[1100px]:w-[195px] max-[890px]:w-[350px] max-[890px]:w-[195px] max-[630px]:hidden">{modertor.email}</p>
                                     <div className='absolute inline-flex gap-[27px] right-0 max-[1100px]:gap-[15px]'>
                                         <div className='rounded-md bg-white shadow-md px-[12px] text-blue-800 font-roboto text-[12px] font-medium leading-6 cursor-pointer' onClick={() => HandleEditModerator(modertor.id)} >Edit</div>
-                                        <div className='rounded-md bg-white shadow-md px-[12px] text-blue-800 font-roboto text-[12px] font-medium leading-6 cursor-pointer' >Delete</div>
+                                        <div className='rounded-md bg-white shadow-md px-[12px] text-blue-800 font-roboto text-[12px] font-medium leading-6 cursor-pointer' onClick={() => HandleDeleteModerator(modertor.id)} >Delete</div>
                                     </div>
                                 </div>
                             </div>
@@ -69,7 +89,7 @@ function ManageModerators({ largeurEcran, moderatorsList }) {
                 </div>
 
             </div>
-        </>
+        </div>
     )
 
 }

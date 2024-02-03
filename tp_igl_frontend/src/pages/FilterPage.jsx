@@ -7,7 +7,6 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 
-
     export const FilterPage = ({ isVisible, onClose ,onApplyFilter}) => {
         const [authors, setAuthors] = useState([""]);
         const [institutions, setinstitutions] = useState([""]);

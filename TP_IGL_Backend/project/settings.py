@@ -49,13 +49,21 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'django_elasticsearch_dsl',
+    'corsheaders',
+
     
 
 ]
 
 MIDDLEWARE = [
+        'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+<<<<<<< HEAD
     'corsheaders.middleware.CorsMiddleware',
+=======
+    'allauth.account.middleware.AccountMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+>>>>>>> haifaa
     'django.middleware.common.CommonMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -65,6 +73,24 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # or your React app's URL
+]
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+# CORS_ALLOW_HEADERS = [
+#     'access-control-allow-origin',
+#     'access-control-allow-credentials',
+#     'content-type',
+# ]
 
 ROOT_URLCONF = 'project.urls'
 
@@ -125,7 +151,11 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'test',
         'USER': 'root',
+<<<<<<< HEAD
         'PASSWORD': 'salah', 
+=======
+        'PASSWORD': 'BouhadiPassSQL944', 
+>>>>>>> haifaa
         'HOST': '127.0.0.1',
         'PORT': '3306',
         
