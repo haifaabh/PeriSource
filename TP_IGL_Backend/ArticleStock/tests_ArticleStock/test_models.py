@@ -6,7 +6,7 @@ class ArticleModelTests(TestCase):
         article = Article.objects.create(
             titre='Test Title',
             resume='Test summary',
-            auteurs='Author1, Author2',
+            auteurs='Author1, Author2z',
             institutions='Institution1, Institution2',
             mots_cles='Keyword1, Keyword2',
             texte_integral='Full text of the article',
