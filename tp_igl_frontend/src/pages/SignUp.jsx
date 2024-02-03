@@ -82,7 +82,7 @@ function SignUp() {
         icon: 'success',
         confirmButtonText: 'OK',
       });
-      navigate('../user');
+      navigate('../Home');
     } catch (error) {
       console.error('Registration error:', error.response ? error.response.data : error.message);
       if (error.response && error.response.data) {
@@ -188,7 +188,7 @@ function SignUp() {
 
             <p className='text-base text-black'>
               Already have an account?{' '}
-              <a href='' className='text-blue-500'>
+              <a href='../signin' className='text-blue-500'>
                 Sign in
               </a>
             </p>

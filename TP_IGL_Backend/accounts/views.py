@@ -54,39 +54,31 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = CustomUserSerializer
     
     
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def retrieve_user(request, id):
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny]) 
+def user_detail(request, username):
     try:
-        user = CustomUser.objects.get(id=id)
+       user = CustomUser.objects.get(username=username, role=CustomUser.Role.User)
     except CustomUser.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "Moderator not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    serializer = CustomUserSerializer(user)
-    return Response(serializer.data)
+    if request.method == 'GET':
+        serializer = CustomUserSerializer(user)
+        return Response(serializer.data)
 
-
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def update_user(request, id):
-    try:
-        user = CustomUser.objects.get(id=id)
-    except CustomUser.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'POST':
-        data = request.data
-        serializer = CustomUserSerializer(user, data=data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    elif request.method == 'POST':
+        
+            data = request.data
+            serializer = CustomUserSerializer(user, data=data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def get_moderators(request):
     if request.method == 'GET':
-        moderators = CustomUser.objects.filter(role='moderator')
+        moderators = CustomUser.objects.filter(role='user')
         serializer = CustomUserSerializer(moderators, many=True)
         return Response(serializer.data)
     
@@ -152,60 +144,6 @@ def consulter_favories(request, username):
     article_ids = user.favorites
     response_data = {
         "article_ids": article_ids,
-    }
-
-    return Response(response_data, status=status.HTTP_200_OK)
-
-
-@api_view(['POST'])
-def remove_article_from_favorites(request, username):
-    try:
-        user = CustomUser.objects.get(username=username,role=CustomUser.Role.User)
-    except CustomUser.DoesNotExist:
-        return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    article_id = request.data.get('article_id')
-    if not article_id:
-        return Response({"detail": "article_id is required"}, status=status.HTTP_400_BAD_REQUEST)
-
-
-    if article_id in user.favorites:
-        user.favorites.remove(article_id)
-        user.save()
-
-    user_serializer = CustomUserSerializer(user)
-    return Response(user_serializer.data, status=status.HTTP_200_OK)
-
-@api_view(['GET'])
-def consulter_favories(request, username):
-    try:
-        user = CustomUser.objects.get(username=username, role=CustomUser.Role.User)
-    except CustomUser.DoesNotExist:
-        return Response({"detail": "User not found or not of the required role"}, status=status.HTTP_404_NOT_FOUND)
-
-    article_ids = user.favorites
-    response_data = {
-        "article_ids": article_ids,
-    }
-
-    return Response(response_data, status=status.HTTP_200_OK)
-
-@api_view(['GET'])
-def consulter_favories(request, username):
-    try:
-        user = CustomUser.objects.get(username=username, role=CustomUser.Role.User)
-    except CustomUser.DoesNotExist:
-        return Response({"detail": "User not found or not of the required role"}, status=status.HTTP_404_NOT_FOUND)
-
-    article_ids = user.favorites
-    articles = []
-
-    for article_id in article_ids:
-        article = ArticleDocument.get(id=article_id).to_dict()
-        articles.append(article)
-
-    response_data = {
-        "articles": articles,
     }
 
     return Response(response_data, status=status.HTTP_200_OK)

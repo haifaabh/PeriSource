@@ -5,7 +5,7 @@ import UserPageM from '../assets/UserPageM.svg';
 import UserPageW from '../assets/UserPageW.svg';
 import { View, TouchableOpacity, Text } from 'react';
 import { FilterPage } from '../pages/FilterPage';
-import { useState } from 'react'; 
+import { useState , useEffect } from 'react'; 
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import Slider from 'react-slick';
@@ -15,6 +15,8 @@ import { ArticleScientifique } from './ArticleScientifique';
 
 
 export const HeroUser = () => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const getCsrfToken = () => {
     const csrfCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
     if (csrfCookie) {
@@ -35,12 +37,14 @@ export const HeroUser = () => {
     const [filteredArticles, setFilteredArticles] = useState([]);
     const [originalArticles, setOriginalArticles] = useState([]);
 
-    const handleApplyFilter = async (filterCriteria) => { 
-      let articleIdsAuteurs = [];
-      let articleIdsMotsCles = [];
-      let articleIdsInstitutions = [];
-    
+    const handleApplyFilter = async (filterCriteria) => {
       try {
+        let articleIdsAuteurs = [];
+        let articleIdsMotsCles = [];
+        let articleIdsInstitutions = [];
+        let commonArticleIds = articlesId ; 
+    
+        // Fetch article ids filtered by authors
         if (filterCriteria.authors && filterCriteria.authors.length > 0) {
           const responseAuteurs = await axios.post('http://localhost:8000/ArticleStock/search_auteurs/', {
             keywords: filterCriteria.authors,
@@ -49,8 +53,8 @@ export const HeroUser = () => {
           console.log('Articles filtered by auteurs:', articleIdsAuteurs);
         }
     
+        // Fetch article ids filtered by keywords
         if (filterCriteria.keywords && filterCriteria.keywords.length > 0) {
-          console.log('keywooooooooords:', filterCriteria.keywords);
           const responseMotsCles = await axios.post('http://localhost:8000/ArticleStock/search_mots_cles/', {
             keywords: filterCriteria.keywords,
           });
@@ -58,6 +62,7 @@ export const HeroUser = () => {
           console.log('Articles filtered by mots_cles:', articleIdsMotsCles);
         }
     
+        // Fetch article ids filtered by institutions
         if (filterCriteria.institutions && filterCriteria.institutions.length > 0) {
           const responseInstitutions = await axios.post('http://localhost:8000/ArticleStock/search_institutions/', {
             keywords: filterCriteria.institutions,
@@ -66,11 +71,11 @@ export const HeroUser = () => {
           console.log('Articles filtered by institutions:', articleIdsInstitutions);
         }
     
-        let commonArticleIds = [];
-    
+
         if (filterCriteria.authors && filterCriteria.authors.length > 0) {
-          commonArticleIds = articleIdsAuteurs;
+          commonArticleIds = intersect_lists([commonArticleIds, articleIdsAuteurs]);
         }
+    
     
         if (filterCriteria.keywords && filterCriteria.keywords.length > 0) {
           commonArticleIds = intersect_lists([commonArticleIds, articleIdsMotsCles]);
@@ -78,33 +83,49 @@ export const HeroUser = () => {
     
         if (filterCriteria.institutions && filterCriteria.institutions.length > 0) {
           commonArticleIds = intersect_lists([commonArticleIds, articleIdsInstitutions]);
+          console.log('Common Article IDs after intersection:', commonArticleIds);
         }
-        let articlesIds = [];
-        if (articlesId && articlesId.length > 0) {
-           articlesIds = intersect_lists([commonArticleIds, articlesId]);
-        }else { 
-          articlesIds = commonArticleIds;
-        }
-          const detailedArticles = await Promise.all(
-            articlesIds.map(async (articleId) => {
-              try {
-                const articleResponse = await axios.get(
-                  `http://localhost:8000/ArticleStock/articles/${articleId}`
-                );
-                return articleResponse.data.article;
-              } catch (articleError) {
-                console.error('Error fetching article:', articleError);
-                return null; 
-              }
-            })
-          );
-          setArticles(detailedArticles);
-          setSearch(true); 
-        console.log('Common Articles:', commonArticleIds);
+    
+        // Fetch detailed articles based on commonArticleIds
+        const detailedArticles = await Promise.all(
+          commonArticleIds.map(async (articleId) => {
+            try {
+              const articleResponse = await axios.get(`http://localhost:8000/ArticleStock/articles/${articleId}`);
+              return articleResponse.data.article;
+            } catch (articleError) {
+              console.error('Error fetching article:', articleError);
+              return null;
+            }
+          })
+        );
+    
+        setArticles(detailedArticles);
+        setSearch(true);
       } catch (error) {
         console.error('Search error:', error);
       }
     };
+    
+    const fetchArticles = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/ArticleStock/have/');
+        console.log('API Response:', response.data);
+        const articlesIDArray = Array.isArray(response.data.results) ? response.data.results.map(article => article.id) : [];
+        setArticlesID(articlesIDArray);
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+        setError('Error fetching articles. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    useEffect(() => {
+      fetchArticles();
+    }, []); // Empty dependency array to run the effect only once
+     
+    
+
 
     const handleSearch = async (e) => {
       e.preventDefault();
@@ -128,14 +149,14 @@ export const HeroUser = () => {
                 return articleResponse.data.article;
               } catch (articleError) {
                 console.error('Error fetching article:', articleError);
-                return null; 
+                return null;
               }
             })
           );
-          setSearch(true);  
+          // Check if search returned any results
+          setSearch(detailedArticles.length > 0);
           console.log('Detailed Articles:', detailedArticles);
           setArticles(detailedArticles);
-
         } else {
           console.error('Search error:', error);
         }
@@ -143,6 +164,7 @@ export const HeroUser = () => {
         console.error('Search error:', error);
       }
     };  
+    
     
     const sliderSettings = {
       dots: true,

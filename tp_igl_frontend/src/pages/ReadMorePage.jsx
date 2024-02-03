@@ -1,15 +1,17 @@
 import React from 'react'
-import { NavbarUser } from '../components/NavbarUser'
+import { NavbarReadMore } from '../components/NavbarReadMore'
 import { AffichArticle } from '../components/AffichArticle'
 import { useAuth } from '../AuthContext';
+import Footer from '../components/Footer';
 
 
 
 export const ReadMorePage = () => {
   return (
     <div>
-        <NavbarUser/>
+        <NavbarReadMore/>
         <AffichArticle/>
+        <Footer/>
     </div>
   )
 }

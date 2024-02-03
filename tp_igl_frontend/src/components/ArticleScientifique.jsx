@@ -4,8 +4,6 @@ import IconDelete from '../assets/IconDelete.svg'
 import favoritAddedIcon from '../assets/favoritAddedIcon.svg'
 import { useState , useContext } from 'react';
 import heartIcon from '../assets/heartIcon.svg'
-import { ReadMorePage } from '../pages/ReadMorePage';
-import { ArticleContext } from '../ArticleContext';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
@@ -35,21 +33,25 @@ export const ArticleScientifique = ({ articleCh, onAddToFavorites,onRemoveFromFa
   };
 
 
+
+
   const { titre: title, resume: content, readMoreLink, url_pdf: pdfLink } = articleCh;
 
   const resumeWords = content.split(' ');
-  const omittedResume = resumeWords.slice(1).join(' ');
+  let omittedResume = resumeWords.join(' ');
+  omittedResume = omittedResume.replace(/^abstract\s*/i, '');
+
 
   return (
     <div className="lg:max-w-[450px]  md:max-w-[300px] md:mx-auto mx-[45px] bg-white p-4 shadow-md rounded-md mb-4">
       {/* Title */}
       <div className='flex h-20'>
-        <h2 className="text-xl font-bold text-[#002366] mb-2 font-roboto">{title}</h2>
+        <h2 className="lg:text-xl sm:text-[15px] font-bold text-[#002366] mb-2 font-roboto line-clamp-3">{title}</h2>
         {isFavoritesPage && <img src={heartIcon} alt="" className="w-6 ml-2 h-6 " />}
       </div>
 
       {/* Content */}
-      <p className="text-gray-700 overflow-hidden md:max-h-36 max-h-70  mb-2 font-roboto">
+      <p className="text-gray-700 overflow-hidden md:max-h-36 max-h-70  mb-2 font-roboto md:line-clamp-6 line-clamp-5">
         {omittedResume}
       </p>
 

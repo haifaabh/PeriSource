@@ -47,7 +47,7 @@ function SignIn() {
        console.log('Login successful:', refresh);
 
        if (role =='user') {
-        navigate('../user');
+        navigate('../Home');
        } else {
          if (role == 'admin') {navigate('../admin');}
          if (role == 'moderator') {navigate('../moderator');}
@@ -109,7 +109,7 @@ function SignIn() {
 
             <p className='text-base text-black'>
               Don't have an account?{' '}
-              <a href='' className='text-blue-500'>
+              <a href='../signup' className='text-blue-500'>
                 Sign up
               </a>
             </p>

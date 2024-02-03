@@ -81,7 +81,7 @@ import 'react-datepicker/dist/react-datepicker.css';
           const nonEmptyKeywords = keywords.filter(keyword => keyword.trim() !== "");
           const nonEmptyAuthors= authors.filter(author => author.trim() !== "");
           const nonEmptyInst= institutions.filter(institution => institution.trim() !== "");
-
+          console.log("instt",nonEmptyInst)
           e.preventDefault();
           onApplyFilter({ authors: nonEmptyAuthors , institutions : nonEmptyInst, keywords : nonEmptyKeywords, startDate, endDate });
           onClose();
@@ -240,13 +240,6 @@ import 'react-datepicker/dist/react-datepicker.css';
             >
               Delete
             </button>
-          {/* <button
-            type="submit"  
-            className="bg-[#ABBED1] text-white p-2 px-6 rounded-full mt-4 mr-4 hover:bg-gray-700"
-            onClick={() => onClose()}
-          >
-            Cancel
-          </button> */}
           <button
               type="submit"
             className="bg-[#0979D0] text-white p-2 px-6 rounded-full mt-4 hover:bg-gray-700"
