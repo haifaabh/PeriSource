@@ -8,8 +8,20 @@ import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import NavbarModerator from '../components/NavbarModerator';
 import Footer from '../components/Footer';
 import ArticleTable from '../components/ArticleTable';
+import { useAuth } from '../AuthContext';
+
 
 export const ModeratorPage = () => {
+   const { userId } = useAuth();
+
+  React.useEffect(() => {
+    if (!userId) {
+      console.log('Navigating to /signin...');
+      window.location.href = '/signin';
+      console.log('Navigation executed.');
+    }
+  }, [userId]);
+  
   return (
   <div>
 <NavbarModerator />
