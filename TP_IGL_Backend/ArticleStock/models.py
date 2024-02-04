@@ -1,6 +1,7 @@
 # models.py
 
 from django.db import models
+from django.utils import timezone
 
 class Article(models.Model):
     titre = models.CharField(max_length=200)
@@ -11,3 +12,4 @@ class Article(models.Model):
     texte_integral = models.TextField()
     url_pdf = models.TextField()
     references_bibliographiques = models.TextField()
+    publication_date = models.DateField(default=timezone.now)

@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from elasticsearch_dsl import connections
 from ArticleStock import extract_title
-
 from ArticleStock.extract_infos import extract_clean_text_from_pdf, extract_information
 from ArticleStock.extract_references import extract_reference_section, extract_references_as_list
 from .models import Article
@@ -20,6 +19,11 @@ import requests
 from django.shortcuts import get_object_or_404
 import json
 import re
+from datetime import datetime
+from django.db.models import Q
+from django.http import HttpRequest
+from elasticsearch_dsl import Search
+
 
 @api_view(['GET'])
 def say_hello(request):
@@ -174,23 +178,61 @@ def search_articles_by_mots_cles(request):
 def search_articles_by_institutions(request):
     return search_articles_by_field(request, 'institutions')
 
-def search_articles_by_field(request, field):
+
+
+@api_view(['POST'])
+def search_articles_by_date(request):
     try:
-        # Get the search keywords from the POST data
+        start_date_str = request.data.get('start_date', '')
+        end_date_str = request.data.get('end_date', '')
+
+        # Check if start_date and end_date are provided for date range filtering
+        if start_date_str and end_date_str:
+            return search_articles_by_field(request, 'publication_date', is_search_by_date=True)
+        else:
+            return search_articles_by_field(request, 'publication_date')
+
+    except Exception as e:
+        return Response({'success': False, 'error': str(e)})
+
+
+def search_articles_by_field(request, field, is_search_by_date=False):
+    try:
+        # Get the search keywords and date range from the POST data
         search_keywords = request.data.get('keywords', [])
 
         if not search_keywords:
             return Response({'success': False, 'error': 'Search keywords are required'})
 
         # Construct a bool query with should clauses for the specified field
-        should_clauses = [Q('match', **{field: keyword}) for keyword in search_keywords]
+        should_clauses = []
+
+        # Add date range filtering if is_search_by_date is True
+        if is_search_by_date:
+            start_date_str = request.data.get('start_date', '')
+            end_date_str = request.data.get('end_date', '')
+            if start_date_str and end_date_str:
+                start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+                end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+                date_range_clause = Q('range', **{field: {'gte': start_date, 'lte': end_date}})
+                should_clauses.append(date_range_clause)
+
+                # Also add should clauses for keywords in mots_cles field
+                keyword_clauses = [Q('match', mots_cles=keyword) for keyword in search_keywords]
+                should_clauses.extend(keyword_clauses)
+        else :
+            should_clauses = [Q('match', **{field: keyword}) for keyword in search_keywords]
+          
+
         query = Q('bool', should=should_clauses)
 
         # Create a search instance
         s = Search(index='mes_articles').query(query)
 
         # Execute the search and retrieve the results
+        print(f'Elasticsearch query: {s.to_dict()}')
         response = s.execute()
+        print(f'Elasticsearch response: {response.to_dict()}')
 
         # Get the IDs of the articles where the keywords are found
         article_ids = [hit.meta.id for hit in response.hits]
@@ -199,6 +241,8 @@ def search_articles_by_field(request, field):
 
     except Exception as e:
         return Response({'success': False, 'error': str(e)})
+
+
     
 @api_view(['POST'])
 def upload(request):

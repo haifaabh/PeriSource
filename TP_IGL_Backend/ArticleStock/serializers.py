@@ -3,10 +3,12 @@ from rest_framework import serializers
 from .models import Article
 
 class ArticleSerializer(serializers.ModelSerializer):
-    auteurs = serializers.ListField(child=serializers.CharField())  # Handle list of authors
-    institutions = serializers.ListField(child=serializers.CharField())  # Handle list of institutions
-    mots_cles = serializers.ListField(child=serializers.CharField())  # Handle list of keywords
-    references_bibliographiques = serializers.ListField(child=serializers.CharField())  # Handle list of references
+    auteurs = serializers.ListField(child=serializers.CharField(max_length=100))
+    institutions = serializers.ListField(child=serializers.CharField(max_length=100))
+    mots_cles = serializers.ListField(child=serializers.CharField(max_length=100))
+    references_bibliographiques = serializers.ListField(child=serializers.CharField(max_length=None))
+    publication_date = serializers.DateField()
+
     class Meta:
         model = Article
-        fields ="__all__"
+        fields = "__all__"
