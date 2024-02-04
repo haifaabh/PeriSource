@@ -21,5 +21,7 @@ path('delete_article/<str:article_id>/',views.delete_article , name='delete_arti
 path('pdf-paths/', views.get_pdf_paths),
 path('delete_article/<str:article_id>/',views.delete_article),
 path('search_date/',views.search_articles_by_date),
+path('search_date/',views.search_articles_by_date),
 ]
+
 
