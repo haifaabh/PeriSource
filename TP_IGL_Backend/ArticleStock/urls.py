@@ -17,11 +17,8 @@ path('search_institutions/',views.search_articles_by_institutions),
 path('upload/',views.upload),
 path('modify_article/<str:article_id>/',views.update_article),
 path('recent/',views.retrieve_latest_validated_articles),
-<<<<<<< HEAD
 path('delete_article/<str:article_id>/',views.delete_article , name='delete_article'),
-=======
 path('pdf-paths/', views.get_pdf_paths),
 path('delete_article/<str:article_id>/',views.delete_article),
-
->>>>>>> haifaa
+path('search_date/',views.search_articles_by_date),
 ]
