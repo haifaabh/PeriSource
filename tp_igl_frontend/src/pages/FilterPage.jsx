@@ -74,6 +74,8 @@ import 'react-datepicker/dist/react-datepicker.css';
           setAuthors(['']);
           setinstitutions(['']);
           setkeywords(['']);
+          setStartDate(null);
+          setEndDate(null);
         };
 
       
@@ -81,9 +83,11 @@ import 'react-datepicker/dist/react-datepicker.css';
           const nonEmptyKeywords = keywords.filter(keyword => keyword.trim() !== "");
           const nonEmptyAuthors= authors.filter(author => author.trim() !== "");
           const nonEmptyInst= institutions.filter(institution => institution.trim() !== "");
+          const startD = startDate;
+          const endD = endDate;
           console.log("instt",nonEmptyInst)
           e.preventDefault();
-          onApplyFilter({ authors: nonEmptyAuthors , institutions : nonEmptyInst, keywords : nonEmptyKeywords, startDate, endDate });
+          onApplyFilter({ authors: nonEmptyAuthors , institutions : nonEmptyInst, keywords : nonEmptyKeywords, startDate :startD, endDate : endD });
           onClose();
         };
       
@@ -208,24 +212,23 @@ import 'react-datepicker/dist/react-datepicker.css';
                   Period
                 </h4>
               <div className="flex space-x-4">
-                <DatePicker
-                  selected={startDate}
-                  onChange={(date) => setStartDate(date)}
-                  dateFormat="yyyy"
-                  showYearPicker
-                  className="date-picker-input w-[100px] md:w-full"
-                  placeholderText="Start"
-                  portal={document.body}
-                />
-                <DatePicker
-                  selected={endDate}
-                  onChange={(date) => setEndDate(date)}
-                  dateFormat="yyyy"
-                  showYearPicker
-                  className="date-picker-input w-[100px] md:w-full"
-                  placeholderText="End"
-                  portal={document.body}
-                />
+              <DatePicker
+    selected={startDate}
+    onChange={(date) => setStartDate(date)}
+    dateFormat="yyyy-MM-dd" // Change the date format to display year, month, and day
+    className="date-picker-input w-[100px] md:w-full"
+    placeholderText="Start"
+    portal={document.body}
+/>
+
+<DatePicker
+    selected={endDate}
+    onChange={(date) => setEndDate(date)}
+    dateFormat="yyyy-MM-dd" // Change the date format to display year, month, and day
+    className="date-picker-input w-[100px] md:w-full"
+    placeholderText="End"
+    portal={document.body}
+/>
               </div>
             </div>
         </div>

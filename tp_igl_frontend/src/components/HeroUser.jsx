@@ -25,10 +25,8 @@ export const HeroUser = () => {
     return null;
   };
 
-  
-
-  const [articles,setArticles] = useState([]);
-  const [articlesId,setArticlesID] = useState([]);
+    const [articles,setArticles] = useState([]);
+    const [articlesId,setArticlesID] = useState([]);
 
     const [isFilterVisible, setFilterVisible] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -42,6 +40,7 @@ export const HeroUser = () => {
         let articleIdsAuteurs = [];
         let articleIdsMotsCles = [];
         let articleIdsInstitutions = [];
+        let articleIdsPeriode = [];
         let commonArticleIds = articlesId ; 
     
         // Fetch article ids filtered by authors
@@ -70,6 +69,26 @@ export const HeroUser = () => {
           articleIdsInstitutions = responseInstitutions.data.article_ids;
           console.log('Articles filtered by institutions:', articleIdsInstitutions);
         }
+
+        // Fetch article ids filtered by Periode
+        if (filterCriteria.startDate && filterCriteria.endDate) {
+          const startDate = filterCriteria.startDate;
+          const endDate = filterCriteria.endDate;
+          startDate.setDate(startDate.getDate() + 1);
+          endDate.setDate(endDate.getDate() + 1);
+          // Formater les dates au format 'AAAA-MM-JJ'
+          const startDateFormatted = startDate.toISOString().split('T')[0];
+          const endDateFormatted = endDate.toISOString().split('T')[0];
+          console.log('Periode:',startDateFormatted, endDateFormatted);
+          const responsePeriode = await axios.post('http://localhost:8000/ArticleStock/search_date/', {
+            keywords : [" "],
+            start_date: startDateFormatted,
+            end_date: endDateFormatted
+          });
+          console.log('Filtered by Periode:', responsePeriode.data);
+          articleIdsPeriode = responsePeriode.data.article_ids;
+          console.log('Articles filtered by Periode:', articleIdsPeriode);
+        }  
     
 
         if (filterCriteria.authors && filterCriteria.authors.length > 0) {
@@ -80,6 +99,13 @@ export const HeroUser = () => {
         if (filterCriteria.keywords && filterCriteria.keywords.length > 0) {
           commonArticleIds = intersect_lists([commonArticleIds, articleIdsMotsCles]);
         }
+
+        if (filterCriteria.startDate && filterCriteria.endDate) {
+          console.log(' Article IDs selon Periode:', articleIdsPeriode);
+          commonArticleIds = intersect_lists([commonArticleIds, articleIdsPeriode]);
+          console.log('Common Article IDs after intersection:', commonArticleIds);
+        }
+
     
         if (filterCriteria.institutions && filterCriteria.institutions.length > 0) {
           commonArticleIds = intersect_lists([commonArticleIds, articleIdsInstitutions]);
@@ -124,8 +150,6 @@ export const HeroUser = () => {
       fetchArticles();
     }, []); // Empty dependency array to run the effect only once
      
-    
-
 
     const handleSearch = async (e) => {
       e.preventDefault();
