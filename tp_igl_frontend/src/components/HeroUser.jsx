@@ -5,42 +5,39 @@ import UserPageM from '../assets/UserPageM.svg';
 import UserPageW from '../assets/UserPageW.svg';
 import { View, TouchableOpacity, Text } from 'react';
 import { FilterPage } from '../pages/FilterPage';
-import { useState } from 'react'; 
+import { useState , useEffect } from 'react'; 
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import Slider from 'react-slick';
 import { ArticleScientifique } from './ArticleScientifique';
+import { useAuth } from '../AuthContext';
 
 
 
 
 export const HeroUser = () => {
-  const getCsrfToken = () => {
-    const csrfCookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
-    if (csrfCookie) {
-      return csrfCookie.split('=')[1];
-    }
-    return null;
-  };
-
-  
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { userId } = useAuth();
+  const [userFavorites, setUserFavorites] = useState([]);
   const [articles,setArticles] = useState([]);
   const [articlesId,setArticlesID] = useState([]);
 
-    const [isFilterVisible, setFilterVisible] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchEff, setSearch] = useState(false);
+  const [isFilterVisible, setFilterVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchEff, setSearch] = useState(false);
 
-    const [filteredArticles, setFilteredArticles] = useState([]);
-    const [originalArticles, setOriginalArticles] = useState([]);
 
-    const handleApplyFilter = async (filterCriteria) => { 
-      let articleIdsAuteurs = [];
-      let articleIdsMotsCles = [];
-      let articleIdsInstitutions = [];
-    
+
+    const handleApplyFilter = async (filterCriteria) => {
       try {
+        let articleIdsAuteurs = [];
+        let articleIdsMotsCles = [];
+        let articleIdsInstitutions = [];
+        let articleIdsPeriode = [];
+        let commonArticleIds = articlesId ; 
+    
+        // Fetch article ids filtered by authors
         if (filterCriteria.authors && filterCriteria.authors.length > 0) {
           const responseAuteurs = await axios.post('http://localhost:8000/ArticleStock/search_auteurs/', {
             keywords: filterCriteria.authors,
@@ -49,8 +46,8 @@ export const HeroUser = () => {
           console.log('Articles filtered by auteurs:', articleIdsAuteurs);
         }
     
+        // Fetch article ids filtered by keywords
         if (filterCriteria.keywords && filterCriteria.keywords.length > 0) {
-          console.log('keywooooooooords:', filterCriteria.keywords);
           const responseMotsCles = await axios.post('http://localhost:8000/ArticleStock/search_mots_cles/', {
             keywords: filterCriteria.keywords,
           });
@@ -58,6 +55,7 @@ export const HeroUser = () => {
           console.log('Articles filtered by mots_cles:', articleIdsMotsCles);
         }
     
+        // Fetch article ids filtered by institutions
         if (filterCriteria.institutions && filterCriteria.institutions.length > 0) {
           const responseInstitutions = await axios.post('http://localhost:8000/ArticleStock/search_institutions/', {
             keywords: filterCriteria.institutions,
@@ -65,46 +63,108 @@ export const HeroUser = () => {
           articleIdsInstitutions = responseInstitutions.data.article_ids;
           console.log('Articles filtered by institutions:', articleIdsInstitutions);
         }
+
+        // Fetch article ids filtered by Periode
+        if (filterCriteria.startDate && filterCriteria.endDate) {
+          const startDate = filterCriteria.startDate;
+          const endDate = filterCriteria.endDate;
+          startDate.setDate(startDate.getDate() + 1);
+          endDate.setDate(endDate.getDate() + 1);
+          // Formater les dates au format 'AAAA-MM-JJ'
+          const startDateFormatted = startDate.toISOString().split('T')[0];
+          const endDateFormatted = endDate.toISOString().split('T')[0];
+          console.log('Periode:',startDateFormatted, endDateFormatted);
+          const responsePeriode = await axios.post('http://localhost:8000/ArticleStock/search_date/', {
+            keywords : [" "],
+            start_date: startDateFormatted,
+            end_date: endDateFormatted
+          });
+          console.log('Filtered by Periode:', responsePeriode.data);
+          articleIdsPeriode = responsePeriode.data.article_ids;
+          console.log('Articles filtered by Periode:', articleIdsPeriode);
+        }  
     
-        let commonArticleIds = [];
-    
+
         if (filterCriteria.authors && filterCriteria.authors.length > 0) {
-          commonArticleIds = articleIdsAuteurs;
+          commonArticleIds = intersect_lists([commonArticleIds, articleIdsAuteurs]);
         }
+    
     
         if (filterCriteria.keywords && filterCriteria.keywords.length > 0) {
           commonArticleIds = intersect_lists([commonArticleIds, articleIdsMotsCles]);
         }
+
+        if (filterCriteria.startDate && filterCriteria.endDate) {
+          console.log(' Article IDs selon Periode:', articleIdsPeriode);
+          commonArticleIds = intersect_lists([commonArticleIds, articleIdsPeriode]);
+          console.log('Common Article IDs after intersection:', commonArticleIds);
+        }
+
     
         if (filterCriteria.institutions && filterCriteria.institutions.length > 0) {
           commonArticleIds = intersect_lists([commonArticleIds, articleIdsInstitutions]);
+          console.log('Common Article IDs after intersection:', commonArticleIds);
         }
-        let articlesIds = [];
-        if (articlesId && articlesId.length > 0) {
-           articlesIds = intersect_lists([commonArticleIds, articlesId]);
-        }else { 
-          articlesIds = commonArticleIds;
-        }
-          const detailedArticles = await Promise.all(
-            articlesIds.map(async (articleId) => {
-              try {
-                const articleResponse = await axios.get(
-                  `http://localhost:8000/ArticleStock/articles/${articleId}`
-                );
-                return articleResponse.data.article;
-              } catch (articleError) {
-                console.error('Error fetching article:', articleError);
-                return null; 
-              }
-            })
-          );
-          setArticles(detailedArticles);
-          setSearch(true); 
-        console.log('Common Articles:', commonArticleIds);
+    
+        // Fetch detailed articles based on commonArticleIds
+        const detailedArticles = await Promise.all(
+          commonArticleIds.map(async (articleId) => {
+            try {
+              const articleResponse = await axios.get(`http://localhost:8000/ArticleStock/articles/${articleId}`);
+              return articleResponse.data.article;
+            } catch (articleError) {
+              console.error('Error fetching article:', articleError);
+              return null;
+            }
+          })
+        );
+    
+        setArticles(detailedArticles);
+        setSearch(true);
       } catch (error) {
         console.error('Search error:', error);
       }
     };
+    
+    const fetchArticles = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/ArticleStock/have/');
+        console.log('API Response:', response.data);
+        const articlesIDArray = Array.isArray(response.data.results) ? response.data.results.map(article => article.id) : [];
+        setArticlesID(articlesIDArray);
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+        setError('Error fetching articles. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchUserFavorites = async () => {
+      try {
+        const username = userId.username; 
+        console.log(':usernam', username);
+        const response = await axios.get(`http://localhost:8000/consulter_favories/${username}/`);
+        console.log('User favorites:', response.data);
+        if (Array.isArray(response.data.article_ids)) {
+          const favoriteArticleIds = response.data.article_ids;
+          setUserFavorites(favoriteArticleIds);
+        } else {
+          console.error('Invalid response data format: article_ids is not an array');
+        }
+      } catch (error) {
+        console.error('Error fetching user favorites:', error);
+      }
+    };
+
+    useEffect(() => {
+      fetchArticles();
+      fetchUserFavorites();
+    }, []);
+
+    const isArticleInFavorites = (articleId) => userFavorites.includes(articleId);
+ 
+  
 
     const handleSearch = async (e) => {
       e.preventDefault();
@@ -128,14 +188,14 @@ export const HeroUser = () => {
                 return articleResponse.data.article;
               } catch (articleError) {
                 console.error('Error fetching article:', articleError);
-                return null; 
+                return null;
               }
             })
           );
-          setSearch(true);  
+          // Check if search returned any results
+          setSearch(detailedArticles.length > 0);
           console.log('Detailed Articles:', detailedArticles);
           setArticles(detailedArticles);
-
         } else {
           console.error('Search error:', error);
         }
@@ -143,6 +203,7 @@ export const HeroUser = () => {
         console.error('Search error:', error);
       }
     };  
+    
     
     const sliderSettings = {
       dots: true,
@@ -166,8 +227,28 @@ export const HeroUser = () => {
       ],
     };
   
-    const handleAddToFavorites = (index) => {
-      //console.log('Adding to favorites:', articles[index]);
+    const handleAddToFavorites = async (articleId) => {
+      try {
+        const username = userId.username; 
+        const response = await axios.post(`http://localhost:8000/add_to_favorites/${username}/`, {
+          article_id: articleId
+        });
+        console.log('Article added to favorites:', response.data);
+      } catch (error) {
+        console.error('Error adding article to favorites:', error);
+      }
+    };
+  
+    const handleRemoveFromFavorites = async (articleId) => {
+      try {
+        const username = userId.username; 
+        const response = await axios.post(`http://localhost:8000/remove_from_favorites/${username}/`, {
+          article_id: articleId
+        });
+        console.log('Article removed from favorites:', response.data);
+      } catch (error) {
+        console.error('Error removing article from favorites:', error);
+      }
     };
     
   return (
@@ -247,12 +328,14 @@ export const HeroUser = () => {
       {articles.length > 0 ? (
         <div className="slider-container" style={{ position: 'relative' }}>
           <Slider {...sliderSettings}>
-            {articles.map((article, index) => (
+          {articles.map((article, index) => (
               <div key={index}>
-                <ArticleScientifique
-                  articleCh={article}
-                  onAddToFavorites={() => handleAddToFavorites(index)}
+                <ArticleScientifique  
+                  articleCh={article} 
+                  onAddToFavorites={() => handleAddToFavorites(article.id)}
+                  onRemoveFromFavorites={() => handleRemoveFromFavorites(article.id)}
                   isFavoritesPage={false}
+                  isFavoriteArt={isArticleInFavorites(article.id)}
                 />
               </div>
             ))}
