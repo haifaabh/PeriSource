@@ -19,10 +19,5 @@ class ArticleDocument(Document):
     url_pdf = fields.TextField()
     references_bibliographiques = fields.TextField()
     validated = fields.BooleanField()
-<<<<<<< HEAD
-    
-=======
-
->>>>>>> haifaa
     class Django:
         model = Article

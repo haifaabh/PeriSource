@@ -1,19 +1,13 @@
-<<<<<<< HEAD
-from datetime import date
-=======
 import os
->>>>>>> haifaa
 from django.shortcuts import render
 from django.http import Http404, HttpResponse
+from django.http import HttpRequest
 from django.http import JsonResponse
 from elasticsearch import NotFoundError
 from elasticsearch_dsl import connections
 from ArticleStock import extract_title
-<<<<<<< HEAD
 from ArticleStock.extract_infos import extract_clean_text_from_pdf, extract_information
-=======
 from ArticleStock.extract_infos import extract_clean_text_from_pdf, extract_clean_text_from_pdf2, extract_information
->>>>>>> haifaa
 from ArticleStock.extract_references import extract_reference_section, extract_references_as_list
 from .models import Article
 from django.http import JsonResponse
@@ -83,11 +77,7 @@ def retrieve_all_data(request):
 @api_view(['GET'])
 def retrieve_validated_data(request):
     # Retrieve data from Elasticsearch where validated is True
-<<<<<<< HEAD
-    s = Search(index='articles_igl').query('bool', filter=Q('term', validated=True))
-=======
     s = Search(index='tp_igl7').query('bool', filter=Q('term', validated=True))
->>>>>>> haifaa
     s = s.extra(size=1000)  # Change 1000 to the desired number of hits
 
     # Execute the search and retrieve the results
@@ -225,11 +215,7 @@ def search_articles_by_field(request, field):
 
 
         # Create a search instance
-<<<<<<< HEAD
-        s = Search(index='articles_igl').query(query)
-=======
         s = Search(index='tp_igl7').query(query)
->>>>>>> haifaa
 
         # Execute the search and retrieve the results
         response = s.execute()
@@ -305,18 +291,10 @@ def update_article(request, article_id):
 
     # Update the title
     for key, value in request.data.items():
-<<<<<<< HEAD
-            if key != 'url':
-=======
->>>>>>> haifaa
                 setattr(article_document, key, value)
 
         # Set validated to True
     article_document.validated = True
-<<<<<<< HEAD
-    article_document.date = date.today()
-=======
->>>>>>> haifaa
 
     # Reindex the updated document
     article_document.save()
@@ -332,21 +310,13 @@ def update_article(request, article_id):
 def retrieve_latest_validated_articles(request):
     try:
         # Create a search instance
-<<<<<<< HEAD
-        s = Search(index='articles_igl').query(Q('match_all') & Q('term', validated=True))
-=======
         s = Search(index='tp_igl7').query(Q('match_all') & Q('term', validated=True))
->>>>>>> haifaa
 
         # Sort by the 'date' field in descending order
         s = s.sort('-date')
 
         # Limit the number of results to four
-<<<<<<< HEAD
-        s = s[:6]
-=======
         s = s[:4]
->>>>>>> haifaa
 
         # Execute the search and retrieve the results
         response = s.execute()
@@ -363,13 +333,11 @@ def retrieve_latest_validated_articles(request):
     except Exception as e:
         return Response({'error': str(e)})
     
-<<<<<<< HEAD
 @api_view(['DELETE'])
 def delete_article(request, article_id):
     article_document = ArticleDocument.get(id=article_id)
     article_document.delete()
     return Response({'message': 'Article deleted successfully'})
-=======
 
 @api_view(['POST'])
 def get_pdf_paths(request):
@@ -389,4 +357,65 @@ def get_pdf_paths(request):
                 pdf_paths.append(os.path.join(root, file))
 
     return Response({'pdf_paths': pdf_paths})
->>>>>>> haifaa
+
+@api_view(['POST'])
+def search_articles_by_date(request):
+    try:
+        request_data = json.loads(request.body.decode('utf-8'))
+        # Convert DRF Request to Django HttpRequest
+        django_request = HttpRequest()
+        django_request.method = request.method
+        django_request.POST = request.data  # Use request.data here
+        django_request.COOKIES = request.COOKIES
+        django_request.user = request.user
+
+        start_date_str = request.data.get('start_date', '')
+        end_date_str = request.data.get('end_date', '')
+        print(request.data)
+        # Check if start_date and end_date are provided for date range filtering
+        if start_date_str and end_date_str:
+            return search_articles_by_field(django_request, 'publication_date', is_search_by_date=True)
+        else:
+            return search_articles_by_field(django_request, 'publication_date')
+
+    except Exception as e:
+        return Response({'success': False, 'error': str(e)})
+
+
+@api_view(['POST'])
+def search_articles_by_field(request, field, is_search_by_date=False):
+    try:
+        print(f'request.data: {request.data}')  # Add this line for debugging
+        search_keywords = request.data.get('keywords', [])
+        print(f'search_keywords: {search_keywords}')  # Add this line for debugging
+        if not search_keywords:
+            return Response({'success': False, 'error': 'Search keywords are required'})
+
+        # Construct a bool query with should clauses for the specified field
+        should_clauses = [Q('match', **{field: keyword}) for keyword in search_keywords]
+
+        # Add date range filtering if is_search_by_date is True
+        if is_search_by_date:
+            start_date_str = request.data.get('start_date', '')
+            end_date_str = request.data.get('end_date', '')
+            if start_date_str and end_date_str:
+                start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+                end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+                date_range_clause = Q('range', publication_date={'gte': start_date, 'lte': end_date})
+                should_clauses.append(date_range_clause)
+
+        query = Q('bool', should=should_clauses)
+
+        # Create a search instance
+        s = Search(index='mes_articles').query(query)
+
+        # Execute the search and retrieve the results
+        response = s.execute()
+
+        # Get the IDs of the articles where the keywords are found
+        article_ids = [hit.meta.id for hit in response.hits]
+
+        return Response({'success': True, 'article_ids': article_ids})
+
+    except Exception as e:
+        return Response({'success': False, 'error': str(e)})

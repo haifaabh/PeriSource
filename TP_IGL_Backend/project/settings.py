@@ -49,8 +49,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'django_elasticsearch_dsl',
-    'corsheaders',
-
+    
     
 
 ]
@@ -58,12 +57,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
         'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-<<<<<<< HEAD
-    'corsheaders.middleware.CorsMiddleware',
-=======
     'allauth.account.middleware.AccountMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
->>>>>>> haifaa
     'django.middleware.common.CommonMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -149,13 +144,9 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test',
+        'NAME': 'users_accounts',
         'USER': 'root',
-<<<<<<< HEAD
-        'PASSWORD': 'salah', 
-=======
         'PASSWORD': 'BouhadiPassSQL944', 
->>>>>>> haifaa
         'HOST': '127.0.0.1',
         'PORT': '3306',
         

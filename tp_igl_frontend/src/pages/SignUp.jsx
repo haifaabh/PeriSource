@@ -188,7 +188,7 @@ function SignUp() {
 
             <p className='text-base text-black'>
               Already have an account?{' '}
-              <a href='' className='text-blue-500'>
+              <a href='../signin' className='text-blue-500'>
                 Sign in
               </a>
             </p>

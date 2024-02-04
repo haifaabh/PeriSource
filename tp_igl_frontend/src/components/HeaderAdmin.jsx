@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom';
 
 function HeaderAdmin({largeurEcran,handleUploadArticles,handleManageModeratore,showAddModeratorePage}){
     const WidthLimit1 = 1430
