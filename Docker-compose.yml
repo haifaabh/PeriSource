@@ -1,0 +1,63 @@
+version: '3'
+services:
+  db:
+    image: mysql:8
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_DATABASE=mydatabase
+      - MYSQL_USER=myuser
+      - MYSQL_PASSWORD=user_password
+      - MYSQL_ROOT_PASSWORD=some_password
+      - MYSQL_HOST=db
+    volumes:
+      - /tmp/app/mysqld:/var/run/mysqld
+      - ./db:/var/lib/mysql
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.2
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - discovery.type=single-node
+
+  # web:
+  #   build: .
+  #   command: python manage.py runserver 0.0.0.0:8000
+  #   ports:
+  #     - "8000:8000"
+  #   volumes:
+  #     - .:/app
+  #     - /tmp/app/mysqld:/run/mysqld
+  #   depends_on:
+  #     - db
+  #     - elasticsearch
+
+
+  web:
+    build: 
+      context: ./TP_IGL_Backend
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./TP_IGL_Backend:/app
+      - /tmp/app/mysqld:/run/mysqld
+    depends_on:
+      - db
+      - elasticsearch
+
+
+  front:
+    build:
+       context: ./tp_igl_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - web
+  # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+  #   environment:
+  #     - discovery.type=single-node
+  #   ports:
+  #     - "9200:9200"
