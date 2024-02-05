@@ -1,4 +1,5 @@
 from datetime import date
+import os
 from django.shortcuts import render
 from django.http import Http404, HttpResponse
 from django.http import JsonResponse
@@ -21,6 +22,7 @@ import requests
 from django.shortcuts import get_object_or_404
 import json
 import re
+from ArticleStock.extract_references import  text_extractor
 from datetime import datetime
 
 
@@ -288,22 +290,25 @@ def upload(request):
 
 
     text = re.sub(r'\[\s*(.*?)\s*\]', r'[\1]', text)
-    reference_section = extract_reference_section(text)
+    text2=text_extractor(url)
+    reference_section = extract_reference_section(text2)
     references_list = extract_references_as_list(reference_section)
-
     auteurs_list = [author.strip() for author in result.get("authors", "").split(", ") if author.strip()]
     institutions_list = [institution.strip() for institution in result.get("institutions", "").split(", ") if institution.strip()]
+    keywords = result.get("keywords", "").split(", ")
 
     transformed_info = {
     "titre": title,
     "resume": result.get("abstract", None),
     "auteurs": auteurs_list,
     "institutions": institutions_list,
-    "mots_cles": result.get("keywords", "").split(", "),
+     "mots_cles": [keyword for keyword in keywords if keyword != ""],
     "texte_integral": result.get("introduction",None), 
     "url_pdf": url,
     "references_bibliographiques": references_list,
     }
+    
+ 
     serializer = ArticleSerializer(data=transformed_info)
     if serializer.is_valid():
         article_data = serializer.validated_data
@@ -316,6 +321,7 @@ def upload(request):
     
     return Response({'error': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
 # views.py
+
 
 
 

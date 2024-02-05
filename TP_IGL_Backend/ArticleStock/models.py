@@ -12,8 +12,4 @@ class Article(models.Model):
     url_pdf = models.TextField()
     references_bibliographiques = models.TextField()
     validated = models.BooleanField(default=False)
-<<<<<<< HEAD
     date = models.DateField(null=True, blank=True)
-=======
-    date = models.DateField(null=True, blank=True)
->>>>>>> haifaa

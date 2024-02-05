@@ -7,7 +7,7 @@ from .models import Article
 @registry.register_document
 class ArticleDocument(Document):
     class Index:
-        name = 'tp_igl7'
+        name = 'articles_igl'
         settings = {'number_of_shards': 1, 'number_of_replicas': 0}
 
     titre = fields.TextField()
@@ -19,10 +19,5 @@ class ArticleDocument(Document):
     url_pdf = fields.TextField()
     references_bibliographiques = fields.TextField()
     validated = fields.BooleanField()
-<<<<<<< HEAD
-    
-=======
-
->>>>>>> haifaa
     class Django:
         model = Article

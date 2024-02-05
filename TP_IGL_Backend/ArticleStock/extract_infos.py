@@ -47,7 +47,7 @@ def extract_information(article_text):
     
 
     nlp_en = spacy.load("en_core_web_lg")
-    # nlp_fr = spacy.load("fr_core_news_lg")
+    nlp_fr = spacy.load("fr_core_news_lg")
     section_headers = ["abstract", "keywords", "introduction", "references","index terms"]
 
     pattern = re.compile(fr'({"|".join(re.escape(header) for header in section_headers)})', re.IGNORECASE)
@@ -79,15 +79,14 @@ def extract_information(article_text):
     institutions_en = [ent.text for ent in doc_en.ents if ent.label_ == "ORG"]
     extracted_info["institutions"] = ", ".join(institutions_en)
 
-    # doc_fr = nlp_fr(search_area)
+    doc_fr = nlp_fr(search_area)
 
-    # Extract authors in French
-    # authors_fr = [ent.text for ent in doc_fr.ents if ent.label_ == "PERSON"]
-    # extracted_info["authors"] += ", " + ", ".join(authors_fr)
+    authors_fr = [ent.text for ent in doc_fr.ents if ent.label_ == "PERSON"]
+    extracted_info["authors"] += ", " + ", ".join(authors_fr)
 
-    # # Extract institutions in French
-    # institutions_fr = [ent.text for ent in doc_fr.ents if ent.label_ == "ORG"]
-    # extracted_info["institutions"] += ", " + ", ".join(institutions_fr)
+    # Extract institutions in French
+    institutions_fr = [ent.text for ent in doc_fr.ents if ent.label_ == "ORG"]
+    extracted_info["institutions"] += ", " + ", ".join(institutions_fr)
 
 
     
@@ -95,16 +94,16 @@ def extract_information(article_text):
 
 
     section_patterns = {
-        "abstract": re.compile(r'(Abstract(.*?)|summary:(.*?)|A B S T R A C T(.*?)|résumé:(.*?)|resume:(.*?)|abstrakt:(.*?))(?:(?:keywords|Introduction|Motivation|index terms|Categories and Subject Descriptors|General terms|ccs concepts)|$)', re.DOTALL |  re.IGNORECASE),
-        "keywords": re.compile(r'(keywords(.*?)|mots-clés:(.*?)|index terms(.*?)|terms:(.*?)|key terms:(.*?))(?:(?:Introduction|References|A B S T R A C T|ACM Reference Format)|$)', re.DOTALL |  re.IGNORECASE),
-        "introduction": re.compile(r'(Introduction.*?|Motivation.*?|commencement.*?|perface.*?|preamble.*?|prologue.*?|opening.*?|lead-in.*?)((?:References|Keywords)(?![\s\S]*?(?:References|Keywords))|$)', re.DOTALL | re.IGNORECASE),
+        "abstract": re.compile(r'(Abstract(.*?)|summary:(.*?)|A B S T R A C T(.*?)|résumé:(.*?)|resume:(.*?)|abstrakt:(.*?))(?:(?:keywords|Introduction|Motivation and significance|USE CASE|index terms|Categories and Subject Descriptors|General terms|ccs concepts)|$)', re.DOTALL |  re.IGNORECASE),
+        "keywords": re.compile(r'(keywords(.*?)|mots-clés:(.*?)|index terms(.*?)|terms:(.*?)|key terms:(.*?))(?:(?:Introduction|References|A B S T R A C T|USE CASE|ACM Reference Format)|$)', re.DOTALL |  re.IGNORECASE),
+        "introduction": re.compile(r'(Introduction.*?|Motivation and significance.*?|commencement.*?|perface.*?|preamble.*?|prologue.*?|USE CASE.*?|opening.*?|lead-in.*?)((?:References|Keywords)(?![\s\S]*?(?:References|Keywords))|$)', re.DOTALL | re.IGNORECASE),
 
     }
 
     for section, pattern in section_patterns.items():
         match = pattern.search(article_text)
         if match:
-            extracted_info[section] = match.group(1).strip()       
+            extracted_info[section] = ' '.join(match.group(1).split()[1:]).strip()
 
     return extracted_info
 

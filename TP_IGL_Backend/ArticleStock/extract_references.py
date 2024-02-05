@@ -30,10 +30,10 @@ def extract_reference_section(text):
         last_reference_index = end + last_reference_match.start()
         extended_reference_section = text[end+1:last_reference_index]
         additional_lines = text[last_reference_index:].split('\n')[:4] 
-            result = f"{extended_reference_section}{''.join(additional_lines)}"
+        result = f"{extended_reference_section}{''.join(additional_lines)}"
         return result
     else:
-        return "Reference section not found."
+        return ""
 
 def extract_reference(text, ref_number):
     pattern = re.compile(r'\[' + re.escape(ref_number) + r'\] (.*?)(\. (?=\[)|\.\n|\Z)', re.DOTALL)
@@ -41,7 +41,7 @@ def extract_reference(text, ref_number):
     if match:
         return match.group(1)
     else:
-        return "Reference not found."
+        return ""
 
 def extract_references_as_list(text):
     references_pattern = r'\[\d+\]'
