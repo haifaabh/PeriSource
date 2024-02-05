@@ -18,8 +18,8 @@ function AdminPage() {
     }, []);
 
     const [usersNumber, setUsersNumber] = useState(985454);
-    const [authorsNumber, setAuthorsNumber] = useState(0);
-    const [articlesNumber, setArticlesNumber] = useState(0);
+    const [authorsNumber, setAuthorsNumber] = useState(132);
+    const [articlesNumber, setArticlesNumber] = useState(241);
     const [urlInputValue,setUrlInputValue]=useState("");
     const [urlFilled,setUrlFilled]=useState(false); 
     const [filesList,setFilesList]=useState("");
