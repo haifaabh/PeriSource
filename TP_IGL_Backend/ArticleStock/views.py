@@ -299,11 +299,11 @@ def upload(request):
 
     transformed_info = {
     "titre": title,
-    "resume": result.get("abstract", None),
+    "resume": "none" if result.get("abstract", None) is None or result.get("abstract", None).strip() == "" else result.get("abstract", None),
     "auteurs": auteurs_list,
     "institutions": institutions_list,
-     "mots_cles": [keyword for keyword in keywords if keyword != ""],
-    "texte_integral": result.get("introduction",None), 
+    "mots_cles": [keyword for keyword in keywords if keyword != ""],
+    "texte_integral": "none" if result.get("introduction", None) is None or result.get("introduction", None).strip() == "" else result.get("introduction", None),
     "url_pdf": url,
     "references_bibliographiques": references_list,
     }
