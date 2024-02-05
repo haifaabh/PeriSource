@@ -8,7 +8,6 @@ import Back from '../assets/Back1.svg'
 import backRespo from '../assets/bgUp.svg'
 import Swal from 'sweetalert2';
 import { useAuth } from '../AuthContext';
-import { jwtDecode } from 'jwt-decode';
 
 
 
@@ -57,16 +56,14 @@ function SignUp() {
         is_active: false,
         password,
       });
-
+        console.log(response.data); 
         const { access, refresh } = response.data;
-
-        const decodedToken = jwtDecode(access);
-
         localStorage.setItem('token', access);
         localStorage.setItem('refreshToken', refresh);
 
-        const userId = decodedToken.user_id;
-        const role = decodedToken.role;
+        const userId = response.data.id;
+        const role = response.data.role;
+
 
         setAuthenticatedUser({
           userId, 
@@ -82,7 +79,7 @@ function SignUp() {
         icon: 'success',
         confirmButtonText: 'OK',
       });
-      navigate('../user');
+      navigate('../Home');
     } catch (error) {
       console.error('Registration error:', error.response ? error.response.data : error.message);
       if (error.response && error.response.data) {
