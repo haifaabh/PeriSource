@@ -109,7 +109,7 @@ function SignIn() {
 
             <p className='text-base text-black'>
               Don't have an account?{' '}
-              <a href='' className='text-blue-500'>
+              <a href='../signup' className='text-blue-500'>
                 Sign up
               </a>
             </p>
