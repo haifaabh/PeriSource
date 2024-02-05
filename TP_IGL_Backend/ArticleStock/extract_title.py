@@ -13,6 +13,14 @@ Limitations:
     false positives.
 """
 
+
+
+
+""" REMARQUE IMPORTANTE"""
+""" à monsieur batata et madame zellagui ce code est tire du github de la bibliotheque pdf-title de python,
+j'avais pas le temps pour demander à l'un de vous si je la garde ou pas je mets ce commentaire ici pour cette raison 
+et merci"""
+
 import os
 import re
 import string
