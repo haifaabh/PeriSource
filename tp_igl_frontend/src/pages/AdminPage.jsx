@@ -4,7 +4,19 @@ import BodyAdmin from '../components/BodyAdmin';
 import HeaderAdmin from '../components/HeaderAdmin';
 import ManageModerators from '../components/ManageModerators';
 import axios from 'axios';
+import { useAuth } from '../AuthContext';
+
 function AdminPage() {
+
+   const { userId } = useAuth();
+
+  React.useEffect(() => {
+    if (!userId) {
+      console.log('Navigating to /signin...');
+      window.location.href = '/signin';
+      console.log('Navigation executed.');
+    }
+  }, [userId]);
    
     const [largeurEcran, setLargeurEcran] = useState(window.innerWidth);
     useEffect(() => {
