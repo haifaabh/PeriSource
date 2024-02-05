@@ -27,13 +27,10 @@ export const FavorisPage = () => {
         const articlesArray = Array.isArray(articlesRes.data.results) ? articlesRes.data.results : [];
         setArticles(articlesArray);
         
-        console.log('User favoritess:', userFavoritesRes.data);
         let favoriteArticleIds = null;
         if (Array.isArray(userFavoritesRes.data.article_ids)) {
-          console.log("hereee1")
           favoriteArticleIds = userFavoritesRes.data.article_ids;
           setUserFavorites(favoriteArticleIds);
-          console.log("favvv",favoriteArticleIds);
         } else {
           console.error('Invalid response data format: article_ids is not an array');
         }
