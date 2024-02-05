@@ -29,9 +29,6 @@ const Navbar = () => {
 return (
   <div className='bg-white flex justify-between items-center h-24 w-screen mx-auto  text-[#4D4D4D] border-b-1.5 border-[#ABBED1] border-opacity-50 lg:px-24 px-4'>
      <div className={!nav ? 'hidden' : 'flex justify-between items-center '}>
-          {/* <div className='lg:block hidden'>
-              <img src={logo} alt="" className="w-full h-auto" />
-          </div> */}
           <div className='mx-2 '>
               <img src={NameLogo} alt="PeriSource" className="w-full h-auto" />
           </div>
@@ -75,7 +72,7 @@ return (
           {!nav ? <AiOutlineClose size={20} /> : <AiOutlineMenu size={20} />}
       </div>
 
-      <div className='flex md:hidden p-0 m-0'>
+      <div className='flex md:hidden p-0 m-0 z-30'>
       <div className={!nav ? 'fixed left-0 top-0 w-[60%] h-full border-r bg-[#ffffff] border-[#ABBED1] border-opacity-40 ease-in-out duration-500': 'fixed left-[-100%]'} >
       <div className='w-[70%] p-4'>
       <img src={NameLogo} alt="PeriSource" className="w-full h-auto "/>
@@ -84,8 +81,7 @@ return (
               <li className='p-4'><a  href="#Home" onClick={() => handlenav()} className="p-4  border-b border-b-gray-600 text-sm lg:text-base hover:text-gray-400 font-montserrat font-semibold">Home</a></li>
               <li className='p-4'><a  href="#About" onClick={() => handlenav()} className="p-4  border-b border-b-gray-600 text-sm lg:text-base hover:text-gray-400 font-montserrat font-semibold">About Us</a></li>
               <li className='p-4'><a href="#Contact" onClick={() => handlenav()} className=" p-4  border-b border-b-gray-600 text-sm lg:text-base hover:text-gray-400 font-montserrat font-semibold">Contact Us</a></li>
-              <li className='p-4'><a href="" onClick={() => handlenav()} className="p-4  border-b border-b-gray-600 text-sm lg:text-base hover:text-gray-400 font-montserrat font-semibold">Favoris
-              </a></li>
+              <li className='p-4'><a href="" onClick={() => handleSignOut()} className=" p-4  border-b border-b-gray-600 text-sm lg:text-base hover:text-gray-400 font-montserrat font-semibold">Sign out</a></li>
           </ul>    
       </div>
       </div>
