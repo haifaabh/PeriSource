@@ -22,8 +22,13 @@ import { AuthProvider as AuthContextProvider } from './AuthContext';
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <SignIn/>,
+  },
+  {
+    path: "/app",
     element: <App/>,
   },
+
   {
     path: "/user",
     element: <UserPage/>,
@@ -67,7 +72,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <AuthContextProvider> 
     <RouterProvider router={router}>
-      <App />
+      <SignIn />
     </RouterProvider>
   </AuthContextProvider>
 );
