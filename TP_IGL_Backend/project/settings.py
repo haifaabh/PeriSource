@@ -157,25 +157,35 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
     # ...
 ]
+# ELASTICSEARCH_DSL = {
+#     'default': {
+#         'hosts': [
+#             {
+#                 'host': 'localhost',
+#                 'port': 9200,
+#         'scheme': 'http',
+#             }
+#         ],
+#         'http_auth': ('elastic', 'cgtnEHoT+TanwVDoyqE2')
+#     },
+#     'dev': {
+#         'hosts': [
+#             {
+#                 'host': 'localhost',
+#                 'port': 9200
+#             }
+#         ]
+#     }
+# }
+
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': [
-            {
-                'host': 'localhost',
-                'port': 9200,
-        'scheme': 'http',
-            }
-        ],
-        'http_auth': ('elastic', 'cgtnEHoT+TanwVDoyqE2')
+        'hosts': '<https://d3c5e383ae1045ec89ccbe919dcaadc8.us-central1.gcp.cloud.es.io>',
+        'http_auth': ('<your-cloud-username>', '<your-cloud-password>'),
+        'use_ssl': True,
+        'verify_certs': True,
+        'timeout': 20,
     },
-    'dev': {
-        'hosts': [
-            {
-                'host': 'localhost',
-                'port': 9200
-            }
-        ]
-    }
 }
 
 # Password validation

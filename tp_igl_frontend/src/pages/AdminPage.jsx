@@ -95,7 +95,7 @@ function AdminPage() {
 
       return (
         <div>
-            <HeaderAdmin largeurEcran={largeurEcran} handleUploadArticles ={handleUploadArticles} handleManageModeratore2={handleManageModeratore} updatemoderatorsList={UpdatemoderatorsList} showAddModeratorePage={showAddModeratorePage}/>
+            <HeaderAdmin largeurEcran={largeurEcran} handleUploadArticles ={handleUploadArticles} handleManageModeratore={handleManageModeratore} updatemoderatorsList={UpdatemoderatorsList} showAddModeratorePage={showAddModeratorePage}/>
             {showAdminMainPage&&!showAddModeratorePage&& (<BodyAdmin largeurEcran={largeurEcran} UrlInputValue={urlInputValue} handleUrlSubmit={handleUrlSubmit} handleUrlChange={handleUrlChange} usersNumber={usersNumber} authorsNumber={authorsNumber} articlesNumber={articlesNumber} showInvalideUrl={showInvalideUrl} filesList={filesList}/>)}
             {!showAdminMainPage&&showAddModeratorePage&&(<ManageModerators largeurEcran={largeurEcran} moderatorsList={moderatorsList} updateNewModeratorAdded={updateNewModeratorAdded}/>)}
         
