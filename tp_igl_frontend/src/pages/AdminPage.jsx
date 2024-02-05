@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import BodyAdmin from '../components/BodyAdmin';
@@ -23,8 +22,9 @@ function AdminPage() {
     const [articlesNumber, setArticlesNumber] = useState(0);
     const [urlInputValue,setUrlInputValue]=useState("");
     const [urlFilled,setUrlFilled]=useState(false); 
-    const [filesList,setFilesList]=useState([]);
+    const [filesList,setFilesList]=useState("");
     const [showInvalideUrl,setShowINvalideUrl]=useState(false)
+    const [showUploadArticles,setShowUploadArticles]=useState(false);//fenetre d'upload articles 
     const [showAddModeratorePage,setShowAddModertorePage]=useState(false)
     const [showAdminMainPage,setShowAdminMainPage]=useState(true)
     const [moderatorsList,setModeratorsList]=useState([])
@@ -34,6 +34,7 @@ function AdminPage() {
       setNewModeratorAdded(true)
     }
 
+    
     const fetchModeratorlist = async()=>{
       if(newModeratorAdded){
          axios.get('http://127.0.0.1:8000/get_moderators')
@@ -58,6 +59,10 @@ function AdminPage() {
         setShowAddModertorePage(false)
       }
     }
+    const handleShowUploadArticles =()=>{
+      setShowUploadArticles(false)
+
+}
     const handleManageModeratore=()=>{
       if(showAdminMainPage){
         setShowAddModertorePage(true)
@@ -68,10 +73,7 @@ function AdminPage() {
       
     }
 
-    const handleShowUploadArticles =()=>{
-          setShowUploadArticles(false)
-
-    }
+   
 
 
     const handleUrlChange = (event) => {
@@ -82,26 +84,43 @@ function AdminPage() {
         setUrlFilled(urlInputValue !== '');
       }, [urlInputValue]);
     
-    const handleUrlSubmit = (e) => {
+      const handleUrlSubmit = async (e) => {
         e.preventDefault();
 
-        if(!urlFilled){
-          setShowINvalideUrl(true)
-        }else{
-          setShowINvalideUrl(false)
-          setUrlInputValue('')
-          document.querySelector('input').value = '';          
+        if (!urlFilled) {
+            setShowINvalideUrl(true);
+            
         }
+        else{
+        try {
+            console.log(urlInputValue)
+            const response = await axios.post(`http://localhost:8000/ArticleStock/upload/`,{ url: urlInputValue });
+            console.log(response.data); 
+            setShowINvalideUrl(false)
+            setShowUploadArticles(urlFilled)
+            setFilesList(response.data)
+            setUrlInputValue('');
+            document.querySelector('input').value = '';
+            
 
-     
-      };
+        } catch (error) {
+            console.error('Error uploading URL:', error.message);
+        }}
+    };
+
+
+
+
+
 
       return (
         <div>
-            <HeaderAdmin largeurEcran={largeurEcran} handleUploadArticles ={handleUploadArticles} handleManageModeratore2={handleManageModeratore} updatemoderatorsList={UpdatemoderatorsList} showAddModeratorePage={showAddModeratorePage}/>
-            {showAdminMainPage&&!showAddModeratorePage&& (<BodyAdmin largeurEcran={largeurEcran} UrlInputValue={urlInputValue} handleUrlSubmit={handleUrlSubmit} handleUrlChange={handleUrlChange} usersNumber={usersNumber} authorsNumber={authorsNumber} articlesNumber={articlesNumber} showInvalideUrl={showInvalideUrl} filesList={filesList} handleShowUploadArticles={handleShowUploadArticles}/>)}
+          
+            <HeaderAdmin largeurEcran={largeurEcran} handleUploadArticles ={handleUploadArticles} handleManageModeratore={handleManageModeratore} updatemoderatorsList={UpdatemoderatorsList} showAddModeratorePage={showAddModeratorePage}/>
+            {showAdminMainPage&&!showAddModeratorePage&& (<BodyAdmin largeurEcran={largeurEcran} UrlInputValue={urlInputValue} handleUrlSubmit={handleUrlSubmit} handleUrlChange={handleUrlChange} usersNumber={usersNumber} authorsNumber={authorsNumber} articlesNumber={articlesNumber} showInvalideUrl={showInvalideUrl} showUploadArticles={showUploadArticles} filesList={filesList} handleShowUploadArticles={handleShowUploadArticles}/>)}
             {!showAdminMainPage&&showAddModeratorePage&&(<ManageModerators largeurEcran={largeurEcran} moderatorsList={moderatorsList} updateNewModeratorAdded={updateNewModeratorAdded}/>)}
-        
+           
+
         </div>
       )
 

@@ -6,9 +6,9 @@ import axios from 'axios'
 function HeaderAdmin({largeurEcran,handleUploadArticles,handleManageModeratore,showAddModeratorePage}){
     const WidthLimit1 = 1430
     const WidthLimit2 = 1180
-    const handleManageModeratore = () => {
+    const handleManageModeratore2= () => {
         if (!showAddModeratorePage) {
-            handleManageModeratore2()
+            handleManageModeratore()
         }
     }
     const handleSignOut = () => {
@@ -37,7 +37,7 @@ function HeaderAdmin({largeurEcran,handleUploadArticles,handleManageModeratore,s
             </div>
             <div className="flex py-2 items-center gap-2 rounded-[30px] p-[4px]" id="manage moderator" style={{ background: showAddModeratorePage ? '#36A3FA' : '#FFF' }}>
                 <p className=" font-roboto text-[10px] font-[700] leading-6 " style={{ fontSize: largeurEcran < 570 ? '11px' : '16px', color: showAddModeratorePage ? '#FFF' : '#585858' }}>Manage Moderators</p>
-                <div className='cursor-pointer' onClick={handleManageModeratore}>
+                <div className='cursor-pointer' onClick={handleManageModeratore2}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="8" viewBox="0 0 14 8" fill="none">
                         <path d="M1 1L7 7L13 1H1Z" fill={showAddModeratorePage ? "#FFF" : "#3F3F3F"} stroke={showAddModeratorePage ? "#FFF" : "#3F3F3F"} strokeWidth="2" strokeLinecap="round" strokeinejoin="round"></path>
                     </svg>
